@@ -1,6 +1,6 @@
 package db;
 import java.sql.*;
-
+//hello world
 public class DBConnection {
     public static Connection connect() {
         try {
