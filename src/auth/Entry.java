@@ -2,45 +2,66 @@ package auth;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
-public class Entry extends JFrame {
-    JLabel Entry;
-    JButton Admin, User;
+//Class for the first JFrame which moves you to login
+public class Entry extends JFrame implements ActionListener {
+    JTextArea Entry;
+    JButton Admin_Button, User_Button;
+
+    Register r = new Register();
+    AdminLogin ad = new AdminLogin();
+    JPanel p;
 
     public Entry() {
         setTitle("Entry");
-        setSize(450, 350);
+        setSize(500, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // def
-        Entry = new JLabel("Signinig in as?");
-        Admin = new JButton("Admin");
-        User = new JButton("User");
+        // Components Definition
+        Entry = new JTextArea("Welcome to our event managment project\n           are you signinig in as?");
+        Admin_Button = new JButton("Admin");
+        User_Button = new JButton("User");
 
-        Entry.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        Entry.setBounds(120, 40, 200, 40);
+        // Component Modifications(Design)
+        Entry.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        Entry.setBounds(30, 30, 450, 100);
 
-        User.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        User.setBounds(50, 200, 150, 45);
-        User.setBorder(null);
-        User.setBackground(Color.gray);
-        User.setForeground(Color.white);
+        User_Button.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        User_Button.setBounds(70, 170, 150, 45);
+        User_Button.setBorder(null);
+        User_Button.setBackground(Color.gray);
+        User_Button.setForeground(Color.white);
 
-        Admin.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        Admin.setBounds(250, 200, 150, 45);
-        Admin.setBorder(null);
-        Admin.setBackground(Color.GRAY);
-        Admin.setForeground(Color.white);
+        Admin_Button.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        Admin_Button.setBounds(265, 170, 150, 45);
+        Admin_Button.setBorder(null);
+        Admin_Button.setBackground(Color.GRAY);
+        Admin_Button.setForeground(Color.white);
 
-        JPanel p = (JPanel) this.getContentPane();
+        p = (JPanel) this.getContentPane();
         p.setLayout(null);
         p.setBackground(Color.white);
         p.add(Entry);
-        p.add(Admin);
-        p.add(User);
-
+        p.add(Admin_Button);
+        p.add(User_Button);
+        User_Button.addActionListener(this);
+        Admin_Button.addActionListener(this);
         this.setVisible(true);
-
     }
+
+    // function to move you to either User login or Admin Login using Admin and User
+    // Buttons
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == User_Button) {// Moves to USER Login JFrame panel
+            this.setVisible(false);
+            Login a = new Login();
+            a.setVisible(true);
+        } else { // Moves to ADMIN Login JFrame panel
+            this.setVisible(false);
+            ad.setVisible(true);
+        }
+    }
+
 }

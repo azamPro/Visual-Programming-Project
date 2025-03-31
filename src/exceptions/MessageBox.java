@@ -1,8 +1,9 @@
 package exceptions;
+
 import javax.swing.*;
 
 public class MessageBox {
-    public static void showError(String msg) {
+    public static void showError(String msg) {// static so it can be called without obj
         JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
