@@ -1,0 +1,10 @@
+{
+    "type": "java",
+    "name": "Launch App",
+    "request": "launch",
+    "mainClass": "main.main",  // or whatever your full main class path is
+    "classpath": [
+      "lib/mysql-connector-j-8.0.33.jar"
+    ]
+  }
+  
