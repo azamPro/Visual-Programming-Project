@@ -127,6 +127,8 @@ public class Login extends JFrame implements ActionListener {
 
                 JOptionPane.showMessageDialog(null, "Welcome: " + User_Name, "Welcome done",
                         JOptionPane.INFORMATION_MESSAGE);
+                HomePage hp = new HomePage();
+                this.setVisible(false);
             } catch (AuthException e1) {
                 // showError(e1.getMessage());
                 JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
