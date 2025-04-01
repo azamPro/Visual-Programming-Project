@@ -9,9 +9,13 @@ import java.sql.*;
 
 
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/events_system";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
+    // private static final String URL = "jdbc:mysql://localhost:3306/events_system";
+    // private static final String USER = "root";
+    // private static final String PASSWORD = "";
+
+    private static final String URL = "jdbc:mysql://srv1821.hstgr.io:3306/u193974765_events_system";
+    private static final String USER = "u193974765_azam";
+    private static final String PASSWORD = "1234Azam";
 
     // // for testing purposes only
     // public static Connection connect() {
