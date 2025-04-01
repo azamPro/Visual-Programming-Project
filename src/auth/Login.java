@@ -8,6 +8,15 @@ import java.awt.*;
 import java.awt.event.*;
 import auth.test;
 
+import db.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+
+
+
 //class for USER Login JFrame
 public class Login extends JFrame implements ActionListener {
     private JTextField User_Name_Field;
@@ -111,23 +120,41 @@ public class Login extends JFrame implements ActionListener {
                 if (password.isEmpty()) {
                     throw new AuthException("Enter Password");
                 }
-                // Database Simulation start
-                for (int i = 0; i < DataBaseSim.count; i++) {
-                    test usr = DataBaseSim.Users[i];
-                    if (usr.getUn().equals(User_Name) && usr.getPwd().equals(password)) {
+                // Database validation
+                ResultSet rs = null;
+                PreparedStatement stmt = null;
+                try {
+                    Connection conn = DBConnection.getConnection();
+                    String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+                    stmt = conn.prepareStatement(sql);
+                    stmt.setString(1, User_Name);
+                    stmt.setString(2, password);
+                    rs = stmt.executeQuery();
+
+                    if (rs.next()) {
                         found = true;
-                        break;
+                    }
+                } catch (SQLException sqlException) {
+                    JOptionPane.showMessageDialog(null, "Database error: " + sqlException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    try {
+                        if (rs != null) rs.close();
+                        if (stmt != null) stmt.close();
+                    } catch (SQLException sqlException) {
+                        JOptionPane.showMessageDialog(null, "Error closing resources: " + sqlException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
-                if (found == false) {
+                if (!found) {
                     throw new AuthException("User Name or password is incorrect");
                 }
-                // Database Simulation end
+        
+                // Only shows when login is valid
+                JOptionPane.showMessageDialog(null, "Welcome: " + User_Name, "Welcome done", JOptionPane.INFORMATION_MESSAGE);
+                HomePage hp = new HomePage();
+                this.setVisible(false);
 
-                JOptionPane.showMessageDialog(null, "Welcome: " + User_Name, "Welcome done",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } catch (AuthException e1) {
+                    } catch (AuthException e1) {
                 // showError(e1.getMessage());
                 JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }

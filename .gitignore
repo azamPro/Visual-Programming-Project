@@ -17,3 +17,5 @@ data/
 
 # === Ignore IDE folders ===
 .idea/
+
+lib/*
