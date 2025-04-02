@@ -22,7 +22,7 @@ public class HomePage extends JFrame implements ActionListener {
 
     int simpleEventY = 285; // where to place next event label
 
-    // Notification components as class members
+    // Notification components 
     private JLabel iconLabel, titleLabel, descriptionLabel, timeLabel;
     private String[] notifTitleArr = {"New Notification"};
     private String[] notifDescArr = {"You have a new message waiting in your inbox. Click to read more."};
