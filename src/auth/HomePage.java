@@ -2,21 +2,36 @@ package auth;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 import auth.Events;
 import auth.EventsDataBase;
 
 public class HomePage extends JFrame implements ActionListener {
-    private JButton Home_Button, Tickets_Button, Event_Management_Button, Profile_Button, Notification_Button,Text_Search_Button; // meunu
+    // Menu and main components
+    private JButton Home_Button, Tickets_Button, Event_Management_Button, Profile_Button, Notification_Button, Text_Search_Button; // menu
     private JButton Create_Event_Button, Combo_Search_Button;
-    private JPanel menuPanel, Tickets_Panel, contentPanel, Event_Management_Panel, Profile_Panel, Notification_Panel,mainPanel, eventsPanel;
+    private JPanel menuPanel, Tickets_Panel, contentPanel, Event_Management_Panel, Profile_Panel, Notification_Panel, mainPanel, eventsPanel;
     private JComboBox Date, Category, Location;
-    private JLabel Password_Label, User_Name_Label, Email_Label, Title_Label, Tickets_Label, Event_Management_Label,Reg_Events_Label, Your_Events_Label, Profile_Label, Notification_Label;
+    private JLabel Password_Label, User_Name_Label, Email_Label, Title_Label, Tickets_Label, Event_Management_Label, Reg_Events_Label, Your_Events_Label, Profile_Label, Notification_Label;
     private JTextField Search_Field;
     private String[] c1 = { "date" };
     private String[] c2 = { "Category" };
     private String[] c3 = { "Location" };
 
     int simpleEventY = 285; // where to place next event label
+
+    // Notification components as class members
+    private JLabel iconLabel, titleLabel, descriptionLabel, timeLabel;
+    private String[] notifTitleArr = {"New Notification"};
+    private String[] notifDescArr = {"You have a new message waiting in your inbox. Click to read more."};
+    private Date[] notifTimeArr = {
+        new Date(System.currentTimeMillis() - 3600000),   // 1 hour ago
+        new Date(System.currentTimeMillis() - 7200000),   // 2 hours ago
+        new Date(System.currentTimeMillis() - 86400000),  // 1 day ago
+        new Date()                                        // current time
+    };
 
     public HomePage() {
         setTitle("Event Management - Home Page");
@@ -155,7 +170,7 @@ public class HomePage extends JFrame implements ActionListener {
         contentPanel.add(Location);
         contentPanel.add(Combo_Search_Button);
 
-        // ======= Panel contains Avalable events in (Home Page)========
+        // ======= Panel contains Available events in (Home Page)========
         eventsPanel = new JPanel();
         eventsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
         eventsPanel.setBounds(0, 140, 800, 400);
@@ -227,7 +242,7 @@ public class HomePage extends JFrame implements ActionListener {
         Password_Label.setFont(new Font("Arial", Font.PLAIN, 16));
         Profile_Panel.add(Password_Label);
 
-        // ============ Notification Panel and ITS DESIGN =============
+        // ============ Notification Panel and ITS DESIGN ============
         Notification_Panel = new JPanel();
         Notification_Panel.setLayout(null);
         Notification_Panel.setBounds(0, 0, 800, 600);
@@ -236,6 +251,34 @@ public class HomePage extends JFrame implements ActionListener {
         Notification_Label.setBounds(0, 0, 800, 80);
         Notification_Label.setOpaque(true);
         Notification_Panel.add(Notification_Label);
+        
+        // --- Insert Notification code (using class members) ---
+        // Pick a random notification time
+        Random notifRandom = new Random();
+        int notifIndex = notifRandom.nextInt(notifTimeArr.length);
+        // Initialize notification components
+        Icon notifIcon = UIManager.getIcon("OptionPane.informationIcon");
+        iconLabel = new JLabel(notifIcon);
+        titleLabel = new JLabel(notifTitleArr[0]);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        descriptionLabel = new JLabel(notifDescArr[0]);
+        descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        timeLabel = new JLabel(sdf.format(notifTimeArr[notifIndex]));
+        timeLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+        // Create a sub-panel to hold the text (title and description)
+        JPanel textPanel = new JPanel(new BorderLayout());
+        textPanel.add(titleLabel, BorderLayout.NORTH);
+        textPanel.add(descriptionLabel, BorderLayout.CENTER);
+        // Create a panel for the notification content
+        JPanel notificationContent = new JPanel(new FlowLayout());
+        notificationContent.setBounds(0, 90, 800, 100);
+        notificationContent.add(iconLabel);
+        notificationContent.add(textPanel);
+        notificationContent.add(timeLabel);
+        // Add the notification content panel to the Notification_Panel
+        Notification_Panel.add(notificationContent);
+        // --- End Notification code insertion ---
 
         // =============== menu and main JPanels ADDED TO JFRAME =========
         mainPanel.add(contentPanel, BorderLayout.CENTER);
@@ -248,33 +291,23 @@ public class HomePage extends JFrame implements ActionListener {
         mainPanel.removeAll();
         if (e.getSource() == Home_Button) { // === RETURNS TO HOME PANEL ===
             mainPanel.add(contentPanel, BorderLayout.CENTER);
-        }
-
-        else if (e.getSource() == Tickets_Button) { // ==== GOES TO TICKETS PANEL ===
+        } else if (e.getSource() == Tickets_Button) { // ==== GOES TO TICKETS PANEL ===
             mainPanel.add(Tickets_Panel, BorderLayout.CENTER);
-        }
-
-        else if (e.getSource() == Event_Management_Button) { // === GOES TO EVENT MANAGEMNT PANEL===
+        } else if (e.getSource() == Event_Management_Button) { // === GOES TO EVENT MANAGEMENT PANEL ===
             mainPanel.add(Event_Management_Panel, BorderLayout.CENTER);
-        }
-
-        else if (e.getSource() == Profile_Button) {// === GOES TO PROFILE PANEL ===
+        } else if (e.getSource() == Profile_Button) { // === GOES TO PROFILE PANEL ===
             mainPanel.add(Profile_Panel, BorderLayout.CENTER);
             User_Name_Label.setText("User Name: " + DataBaseSim.Users[DataBaseSim.Current_User].un);
             Email_Label.setText("User Email: " + DataBaseSim.Users[DataBaseSim.Current_User].mail);
             Password_Label.setText("User Password: " + DataBaseSim.Users[DataBaseSim.Current_User].pass);
-        }
-
-        else if (e.getSource() == Notification_Button) { // === GOES TO NOTIFICATION PANEL===
+        } else if (e.getSource() == Notification_Button) { // === GOES TO NOTIFICATION PANEL ===
             mainPanel.add(Notification_Panel, BorderLayout.CENTER);
-        }
-
-        else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL TO CREATE EVENT ===
+        } else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL TO CREATE EVENT ===
             JTextField Name_Field = new JTextField();
             JTextField Date_Field = new JTextField();
             JTextField Location_Field = new JTextField();
 
-            JPanel panel = new JPanel(new GridLayout(0, 1));// POP UP PANEL DESIGN
+            JPanel panel = new JPanel(new GridLayout(0, 1)); // POP UP PANEL DESIGN
             panel.add(new JLabel("Event Name:"));
             panel.add(Name_Field);
             panel.add(new JLabel("Date:"));
@@ -282,13 +315,13 @@ public class HomePage extends JFrame implements ActionListener {
             panel.add(new JLabel("Location:"));
             panel.add(Location_Field);
 
-            int result = JOptionPane.showConfirmDialog(this, panel, "Create New Event", JOptionPane.OK_CANCEL_OPTION);// POP UP PANEL TO TAKE EVENT NAME,LOCATION,DATE FROM USER
-            if (result == JOptionPane.OK_OPTION) {// IF USER PRESS OK
+            int result = JOptionPane.showConfirmDialog(this, panel, "Create New Event", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) { // IF USER PRESS OK
                 String name = Name_Field.getText().trim();
                 String date = Date_Field.getText().trim();
                 String location = Location_Field.getText().trim();
 
-                if (!name.isEmpty() && !date.isEmpty() && !location.isEmpty()) {// CHECKS IF NAME, DATE,LOCATION IS EMPTY OR NOT
+                if (!name.isEmpty() && !date.isEmpty() && !location.isEmpty()) { // CHECKS IF NAME, DATE, LOCATION IS EMPTY OR NOT
                     JButton newEvent = new JButton(name + " @ " + location + " - " + date);
                     newEvent.setBounds(20, simpleEventY, 700, 40);
                     newEvent.setBackground(Color.GRAY);
@@ -333,8 +366,8 @@ public class HomePage extends JFrame implements ActionListener {
                     Event_Management_Panel.repaint();
                     simpleEventY += 50;
 
-                    // Also refresh and create events events on home
-                    eventsPanel.removeAll();//deletes previous events to avoid duplicates
+                    // Also refresh and create events on home
+                    eventsPanel.removeAll(); // deletes previous events to avoid duplicates
                     for (int i = 0; i < EventsDataBase.ne; i++) {
                         JButton eventBox = new JButton("<html>"
                                 + "<div style='text-align:center;'>"
