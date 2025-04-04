@@ -110,8 +110,13 @@ public class AdminHomePage extends JFrame{
             if (e.getSource() == HomeButton) {
                 setHomeContent();
             } else if (e.getSource() == EventsButton) {
-                setEventsContent();
-            } else if (e.getSource() == UsersButton) {
+                contentPanel.removeAll();
+                EventsPanel eventsPanel = new EventsPanel();
+                contentPanel.add(eventsPanel, BorderLayout.CENTER);
+                contentPanel.revalidate();
+                contentPanel.repaint();
+            }            
+             else if (e.getSource() == UsersButton) {
                 setUsersContent();
             }
         }
