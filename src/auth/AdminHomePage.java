@@ -116,8 +116,13 @@ public class AdminHomePage extends JFrame{
                 contentPanel.revalidate();
                 contentPanel.repaint();
             }            
-             else if (e.getSource() == UsersButton) {
-                setUsersContent();
+            else if (e.getSource() == UsersButton) {
+                contentPanel.removeAll();
+                // Make sure to import com.mycompany.userspanel.UsersPanel if necessary.
+                UsersPanel usersPanel = new UsersPanel();
+                contentPanel.add(usersPanel, BorderLayout.CENTER);
+                contentPanel.revalidate();
+                contentPanel.repaint();
             }
         }
     }
