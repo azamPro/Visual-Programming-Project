@@ -17,12 +17,13 @@ public class EventsPanel extends JPanel {
         // Set a preferred size so the panel is big enough for all columns
         setPreferredSize(new Dimension(1200, 700)); 
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        
 
         // Title label at the top
         JLabel titleLabel = new JLabel("Events Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+        titleLabel.setBackground(Color.GRAY);
         add(titleLabel, BorderLayout.NORTH);
 
         // Create table model with column names
