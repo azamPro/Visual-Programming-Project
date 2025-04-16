@@ -62,4 +62,13 @@ java -cp "lib/*;out" Main
 - Place data access classes (DAOs) in db/.
 
 
+### Task we have to fix and finish 
+
+- in user page and events management the events aviliable not scrolling and the design not good
+
+- in home page the card of event not show currectly the date and time and location
+
+
+
+
 ---

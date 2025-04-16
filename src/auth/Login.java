@@ -4,15 +4,18 @@ import javax.swing.*;
 
 import exceptions.AuthException;
 import exceptions.MessageBox;
+import pages.HomePage;
+
 import java.awt.*;
 import java.awt.event.*;
-import auth.test;
+// import auth.test;
 
 import db.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import pages.HomePage;
 
 
 
@@ -133,6 +136,18 @@ public class Login extends JFrame implements ActionListener {
 
                     if (rs.next()) {
                         found = true;
+                        int userId = rs.getInt("user_id");
+                        String username = rs.getString("username");
+                        String email = rs.getString("email"); 
+                        String pass = rs.getString("password"); 
+                        String role = rs.getString("role");
+
+                        Session.setUser(userId, username, email, pass, role);  // Save globally
+
+                    
+                        HomePage hp = new HomePage();
+                        hp.setVisible(true);
+                        this.setVisible(false);
                     }
                 } catch (SQLException sqlException) {
                     JOptionPane.showMessageDialog(null, "Database error: " + sqlException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -150,9 +165,8 @@ public class Login extends JFrame implements ActionListener {
                 }
         
                 // Only shows when login is valid
-                JOptionPane.showMessageDialog(null, "Welcome: " + User_Name, "Welcome done", JOptionPane.INFORMATION_MESSAGE);
-                HomePage hp = new HomePage();
-                this.setVisible(false);
+                
+
 
                     } catch (AuthException e1) {
                 // showError(e1.getMessage());
