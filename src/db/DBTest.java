@@ -1,6 +1,6 @@
 package db;
 
-import java.sql.*;
+// import java.sql.*;
 
 public class DBTest {
     public static void main(String[] args) {

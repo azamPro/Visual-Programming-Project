@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 // import auth.test;
 import exceptions.AuthException;
-import auth.DataBaseSim;
+// import auth.DataBaseSim;
 
 //Class for the Register JFrame
 public class Register extends JFrame implements ActionListener {
@@ -96,41 +96,6 @@ public class Register extends JFrame implements ActionListener {
                         log = new Login();
                         log.setVisible(true);
                 }
-
-                // this code simlate the register 
-                // if (e.getSource() == Register_Button) {
-                //         String User_Name, Email;
-                //         try {
-                //                 Email = Email_Field.getText();
-                //                 User_Name = User_Name_Field.getText();
-                //                 char pwd[] = Password_Field.getPassword();
-                //                 String password = new String(pwd);
-                //                 if (User_Name.isEmpty()) {
-                //                         throw new AuthException("Enter User Name");
-                //                 }
-                //                 if (password.isEmpty()) {
-                //                         throw new AuthException("Enter Password");
-                //                 }
-                //                 if (Email.isEmpty()) {
-                //                         throw new AuthException("Enter Email");
-                //                 }
-                //                 JOptionPane.showMessageDialog(null,
-                //                                 "Welcome: " + User_Name ,
-                //                                 "Success", JOptionPane.INFORMATION_MESSAGE);
-                //                 // Database Simulation part start
-                //                 test newUser = new test(User_Name, password, Email);
-                //                 DataBaseSim.Users[DataBaseSim.count] = newUser;
-                //                 DataBaseSim.count++;
-                //                 // Database Simulation part end
-                //                 this.setVisible(false);
-                //                 log = new Login();
-                //                 log.setVisible(true);
-                //         } catch (AuthException e1) {
-                //                 // showError(e1.getMessage());
-                //                 JOptionPane.showMessageDialog(null, e1.getMessage(), "Error",
-                //                                 JOptionPane.ERROR_MESSAGE);
-                //         }
-                // }
 
                 // this code is using real database
                 if (e.getSource() == Register_Button) {
