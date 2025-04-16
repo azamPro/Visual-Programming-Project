@@ -19,7 +19,7 @@ public class AdminHomePage extends JFrame{
     private  JPanel contentPanel,menuPanel;
     
     public AdminHomePage() {
-        setTitle("Admin - Home Page");
+        setTitle("Admin - Dashboard");
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -49,11 +49,7 @@ public class AdminHomePage extends JFrame{
         setHomeContent();
         add(contentPanel, BorderLayout.CENTER);
     
-        // Top title label
-        JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 25));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        add(titleLabel, BorderLayout.NORTH);
+        
     
         // Menu listener assignment
         MenuListener menuListener = new MenuListener();

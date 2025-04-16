@@ -14,7 +14,7 @@ public class UsersPanel extends JPanel {
     
     public UsersPanel() {
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        
         
         // Title label at top
         titleLabel = new JLabel("Users", SwingConstants.CENTER);
