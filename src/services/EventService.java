@@ -13,6 +13,7 @@ import db.DBConnection;
 // import java.util.Date;
 
 import exceptions.MessageBox;
+import auth.Session;
 
 
 public class EventService {
@@ -78,7 +79,7 @@ public class EventService {
             notifStmt = conn.prepareStatement(notifSql);
             notifStmt.setInt(1, userId);
             notifStmt.setInt(2, eventId);
-            notifStmt.setString(3, "You are attending " + eventName + " — we are waiting for you.");
+            notifStmt.setString(3, eventName + " You are attending " + "  we are waiting for you.");
             notifStmt.setTimestamp(4, now);
             notifStmt.setTimestamp(5, now);
             notifStmt.setString(6, "register");
@@ -86,7 +87,7 @@ public class EventService {
 
     
             
-            MessageBox.showSuccess("You are attending \"" + eventName + "\" — we're waiting for you.");
+            MessageBox.showSuccess(eventName + " You are attending " + "  we are waiting for you.");
 
     
         } catch (SQLException ex) {
@@ -104,8 +105,25 @@ public class EventService {
             }
         }
     }
+
     
     
-    
+    public static boolean createEvent(String name, String location, Timestamp dateTime, int totalSeats) {
+        String sql = "INSERT INTO events (event_name, location, date, description, total_seats, availablity, organizer_id, category_id, created_at, updated_at) VALUES (?, ?, ?, '', ?, true, ?, 1, NOW(), NOW())";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setString(2, location);
+            stmt.setTimestamp(3, dateTime);
+            stmt.setInt(4, totalSeats);
+            stmt.setInt(5, Session.getUserId());
+            stmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+        
 
 }

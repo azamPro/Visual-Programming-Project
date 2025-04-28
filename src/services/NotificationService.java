@@ -27,7 +27,7 @@ public class NotificationService {
                     rs.getInt("admin_id"),
                     rs.getInt("event_id"),
                     rs.getString("message"),
-                    rs.getString("notificationType"),
+                    rs.getString("notification_type"),
                     rs.getTimestamp("sent_time"),
                     rs.getBoolean("read_status"),
                     rs.getTimestamp("created_at"),
