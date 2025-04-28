@@ -27,9 +27,11 @@ public class ProfilePanel extends JPanel {
         emailLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         add(emailLabel);
 
-        passwordLabel = new JLabel("Password: ");
-        passwordLabel.setBounds(50, 200, 300, 30);
-        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        add(passwordLabel);
+
+        // hide paswword 
+        // passwordLabel = new JLabel("Password: ");
+        // passwordLabel.setBounds(50, 200, 300, 30);
+        // passwordLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        // add(passwordLabel);
     }
 }

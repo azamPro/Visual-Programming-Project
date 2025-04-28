@@ -4,15 +4,10 @@ import javax.swing.*;
 import db.DBConnection;
 
 import java.awt.*;
-import java.awt.event.*;/* 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-*/
-// import java.text.SimpleDateFormat;
-// import java.sql.*;
-// import java.text.SimpleDateFormat;
+import java.awt.event.*;
+
+import services.AdminService;
+
 
 public class AdminHomePage extends JFrame{
     private JButton HomeButton , EventsButton,UsersButton;
@@ -61,14 +56,64 @@ public class AdminHomePage extends JFrame{
     }
     
     // Set home content
+    // private void setHomeContent() {
+    //     contentPanel.removeAll();
+    //     JLabel homeLabel = new JLabel("Welcome to Admin Dashboard", SwingConstants.CENTER);
+    //     homeLabel.setFont(new Font("Arial", Font.BOLD, 24));
+    //     contentPanel.add(homeLabel, BorderLayout.CENTER);
+    //     contentPanel.revalidate();
+    //     contentPanel.repaint();
+    // }
+
     private void setHomeContent() {
         contentPanel.removeAll();
-        JLabel homeLabel = new JLabel("Welcome to Admin Dashboard", SwingConstants.CENTER);
-        homeLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        contentPanel.add(homeLabel, BorderLayout.CENTER);
+    
+        JPanel dashboardPanel = new JPanel();
+        dashboardPanel.setLayout(new GridLayout(2, 3, 20, 20)); // 2 rows x 3 columns
+        dashboardPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        dashboardPanel.setBackground(Color.WHITE);
+    
+        int usersCount = AdminService.getUsersCount();
+        int eventsCount = AdminService.getEventsCount();
+        int registrationsCount = AdminService.getRegistrationsCount();
+        int categoriesCount = AdminService.getCategoriesCount();
+        int organizersCount = AdminService.getOrganizersCount();
+        int attendeesCount = AdminService.getAttendeesCount();
+    
+        dashboardPanel.add(createStatCard("Total Users", usersCount));
+        dashboardPanel.add(createStatCard("Total Events", eventsCount));
+        dashboardPanel.add(createStatCard("Total Registrations", registrationsCount));
+        dashboardPanel.add(createStatCard("Total Categories", categoriesCount));
+        dashboardPanel.add(createStatCard("Total Organizers", organizersCount));
+        dashboardPanel.add(createStatCard("Total Attendees", attendeesCount));
+    
+        contentPanel.add(dashboardPanel, BorderLayout.CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
     }
+        
+    private JPanel createStatCard(String title, int count) {
+        JPanel card = new JPanel();
+        card.setLayout(new BorderLayout());
+        card.setBackground(new Color(245, 245, 245));
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+    
+        JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    
+        JLabel countLabel = new JLabel(String.valueOf(count), SwingConstants.CENTER);
+        countLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        countLabel.setForeground(Color.DARK_GRAY);
+    
+        card.add(titleLabel, BorderLayout.NORTH);
+        card.add(countLabel, BorderLayout.CENTER);
+    
+        return card;
+    }
+    
     
     // Set users content
     private void setUsersContent() {

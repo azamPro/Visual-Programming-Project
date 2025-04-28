@@ -22,6 +22,7 @@ public class HomeContentPanel extends JPanel {
     public JComboBox<String> dateBox, categoryBox, locationBox;
     public JPanel eventsPanel;
     public JLabel titleLabel;
+    
 
     public HomeContentPanel(String[] dates, String[] categories, String[] locations) {
         setLayout(null);
@@ -95,7 +96,9 @@ public class HomeContentPanel extends JPanel {
         eventsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
         eventsPanel.setBounds(0, 140, 800, 400);
         eventsPanel.setBackground(Color.WHITE);
+
         add(eventsPanel);
+       
     }
 
 
@@ -133,14 +136,6 @@ public class HomeContentPanel extends JPanel {
 
         if (result == JOptionPane.YES_OPTION) {
             EventService.registerUserForEvent(Session.getUserId(), eventId, Session.getUsername()); // call the method
-            // JOptionPane.showMessageDialog(
-            //     null,
-            //     "You are attending \"" + name + "\" — we're waiting for you.",
-            //     "Registration Confirmed",
-            //     JOptionPane.INFORMATION_MESSAGE
-            // );
-
-            // Later: save to DB, update attendance records, etc.
         }
     });
 

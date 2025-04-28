@@ -1,15 +1,22 @@
 package sections;
 
 import javax.swing.*;
+
+import services.NotificationService;
+import models.Notification;
+
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.sql.Timestamp;
+import auth.Session;
+
 
 public class NotificationPanel extends JPanel {
     public JLabel titleLabel;
     private JPanel notificationListPanel;
+    
 
 
     public NotificationPanel() {
@@ -25,43 +32,45 @@ public class NotificationPanel extends JPanel {
         add(titleLabel);
 
         // ============ Fake Notification Data ============
-        String notifTitle = "New Notification";
-        String notifDesc = "You have a new message waiting in your inbox. Click to read more.";
-        Date createdAt = new Date(System.currentTimeMillis() - (2 * 60 * 1000)); // 2 min ago
+        notificationListPanel = new JPanel();
+        notificationListPanel.setLayout(new BoxLayout(notificationListPanel, BoxLayout.Y_AXIS));
+        notificationListPanel.setBackground(Color.WHITE);
 
-        // ============ Notification Card ============ 
-        JPanel notifCard = new JPanel();
-        notifCard.setLayout(new BorderLayout(10, 5));
-        notifCard.setBackground(Color.WHITE);
-        notifCard.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-            BorderFactory.createEmptyBorder(10, 15, 10, 15)
-        ));
-        notifCard.setBounds(50, 100, 700, 80);
+        JScrollPane scrollPane = new JScrollPane(notificationListPanel);
+        scrollPane.setBounds(30, 100, 740, 450);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
-        JLabel iconLabel = new JLabel(UIManager.getIcon("OptionPane.informationIcon"));
+        add(scrollPane);
 
-        JLabel notifTitleLabel = new JLabel(notifTitle);
-        notifTitleLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        JLabel notifDescLabel = new JLabel(notifDesc);
-        notifDescLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        // ====== DELETE FROM HERE ======
 
-        JLabel timeLabel = new JLabel(getRelativeTime(createdAt));
-        timeLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-        timeLabel.setForeground(Color.GRAY);
-        timeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        // Old leftover, REMOVE all this:
+        // JLabel iconLabel = new JLabel(UIManager.getIcon("OptionPane.informationIcon"));
+        // JLabel notifTitleLabel = new JLabel("New Notification");
+        // notifTitleLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        JPanel textPanel = new JPanel(new BorderLayout());
-        textPanel.setOpaque(false);
-        textPanel.add(notifTitleLabel, BorderLayout.NORTH);
-        textPanel.add(notifDescLabel, BorderLayout.CENTER);
-        textPanel.add(timeLabel, BorderLayout.SOUTH);
+        // JLabel notifDescLabel = new JLabel(notifDesc);
+        // notifDescLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        notifCard.add(iconLabel, BorderLayout.WEST);
-        notifCard.add(textPanel, BorderLayout.CENTER);
+        // timeLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+        // timeLabel.setForeground(Color.GRAY);
+        // timeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        add(notifCard);
+        // JPanel textPanel = new JPanel(new BorderLayout());
+        // textPanel.setOpaque(false);
+        // textPanel.add(notifTitleLabel, BorderLayout.NORTH);
+        // textPanel.add(notifDescLabel, BorderLayout.CENTER);
+        // textPanel.add(timeLabel, BorderLayout.SOUTH);
+
+        // notifCard.add(iconLabel, BorderLayout.WEST);
+        // notifCard.add(textPanel, BorderLayout.CENTER);
+
+        // add(notifCard);
+
+
+        loadNotifications();
     }
 
     // ===== Helper Method for Relative Time =====
@@ -83,26 +92,69 @@ public class NotificationPanel extends JPanel {
         notificationListPanel.repaint();
     }
     
+    // public void addNotificationCard(String message, Timestamp sentTime) {
+    //     JPanel card = new JPanel(new BorderLayout());
+    //     card.setBorder(BorderFactory.createCompoundBorder(
+    //         BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+    //         BorderFactory.createEmptyBorder(10, 10, 10, 10)
+    //     ));
+    //     card.setBackground(Color.WHITE);
+    
+    //     JLabel msgLabel = new JLabel("<html><b>" + message + "</b></html>");
+    //     msgLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+    
+    //     JLabel timeLabel = new JLabel(new SimpleDateFormat("MMM dd, yyyy hh:mm a").format(sentTime));
+    //     timeLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+    //     timeLabel.setForeground(Color.GRAY);
+    
+    //     card.add(msgLabel, BorderLayout.CENTER);
+    //     card.add(timeLabel, BorderLayout.SOUTH);
+    
+    //     notificationListPanel.add(Box.createVerticalStrut(10));
+    //     notificationListPanel.add(card);
+    // }
+
     public void addNotificationCard(String message, Timestamp sentTime) {
-        JPanel card = new JPanel(new BorderLayout());
-        card.setBorder(BorderFactory.createCompoundBorder(
+        JPanel notifCard = new JPanel();
+        notifCard.setLayout(new BorderLayout(10, 5));
+        notifCard.setBackground(Color.WHITE);
+        notifCard.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+            BorderFactory.createEmptyBorder(10, 15, 10, 15)
         ));
-        card.setBackground(Color.WHITE);
     
-        JLabel msgLabel = new JLabel("<html><b>" + message + "</b></html>");
-        msgLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        // Icon
+        JLabel iconLabel = new JLabel(UIManager.getIcon("OptionPane.informationIcon"));
     
-        JLabel timeLabel = new JLabel(new SimpleDateFormat("MMM dd, yyyy hh:mm a").format(sentTime));
+        // Message (title and description together)
+        JLabel notifTitleLabel = new JLabel(message);
+        notifTitleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+    
+        JLabel timeLabel = new JLabel(getRelativeTime(sentTime));
         timeLabel.setFont(new Font("Arial", Font.ITALIC, 12));
         timeLabel.setForeground(Color.GRAY);
+        timeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
     
-        card.add(msgLabel, BorderLayout.CENTER);
-        card.add(timeLabel, BorderLayout.SOUTH);
+        // Text Panel (title + time)
+        JPanel textPanel = new JPanel(new BorderLayout());
+        textPanel.setOpaque(false);
+        textPanel.add(notifTitleLabel, BorderLayout.NORTH);
+        textPanel.add(timeLabel, BorderLayout.SOUTH);
+    
+        // Card Layout
+        notifCard.add(iconLabel, BorderLayout.WEST);
+        notifCard.add(textPanel, BorderLayout.CENTER);
     
         notificationListPanel.add(Box.createVerticalStrut(10));
-        notificationListPanel.add(card);
+        notificationListPanel.add(notifCard);
     }
+    
+
+    public void loadNotifications() {
+    clearNotifications(); // clear old ones
+    for (Notification notif : NotificationService.getNotificationsForUser(Session.getUserId())) {
+        addNotificationCard(notif.getMessage(), notif.getSentTime());
+    }
+}
     
 }
