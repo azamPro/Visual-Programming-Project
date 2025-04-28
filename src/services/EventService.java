@@ -2,6 +2,7 @@ package services;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -124,6 +125,50 @@ public class EventService {
             return false;
         }
     }
-        
+    
+    // New class inside EventService
+public static class CreatedEvent {
+    private int eventId;
+    private String name;
+    private String location;
+    private String date;
+
+    public CreatedEvent(int eventId, String name, String location, String date) {
+        this.eventId = eventId;
+        this.name = name;
+        this.location = location;
+        this.date = date;
+    }
+
+    public int getEventId() { return eventId; }
+    public String getName() { return name; }
+    public String getLocation() { return location; }
+    public String getDate() { return date; }
+}
+
+    public static List<CreatedEvent> getCreatedEvents(int organizerId) {
+    List<CreatedEvent> list = new ArrayList<>();
+    String sql = "SELECT event_id, event_name, location, date FROM events WHERE organizer_id = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, organizerId);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            list.add(new CreatedEvent(
+                rs.getInt("event_id"),
+                rs.getString("event_name"),
+                rs.getString("location"),
+                rs.getString("date")
+            ));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
+
+
 
 }
