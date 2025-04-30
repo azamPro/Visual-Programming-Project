@@ -239,32 +239,36 @@ public class HomePage extends JFrame implements ActionListener {
             mainPanel.add(Notification_Panel, BorderLayout.CENTER);
         } else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
                                                            // TO CREATE EVENT ===
-            JTextField Name_Field = new JTextField();
-            JTextField Date_Field = new JTextField();
-            JTextField Location_Field = new JTextField();
-
-            JPanel panel = new JPanel(new GridLayout(0, 1)); // POP UP PANEL DESIGN
-            panel.add(new JLabel("Event Name:"));
-            panel.add(Name_Field);
-            panel.add(new JLabel("Date:"));
-            panel.add(Date_Field);
-            panel.add(new JLabel("Location:"));
-            panel.add(Location_Field);
-
-            int result = JOptionPane.showConfirmDialog(this, panel, "Create New Event", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) { // IF USER PRESS OK
-                String name = Name_Field.getText().trim();
-                String date = Date_Field.getText().trim();
-                String location = Location_Field.getText().trim();
-
-                if (!name.isEmpty() && !date.isEmpty() && !location.isEmpty()) { // CHECKS IF NAME, DATE, LOCATION IS
-                                                                                 // EMPTY OR NOT
-                    Events nEvent = new Events(name, location, date);
-                    EventsDataBase.Available_Events[EventsDataBase.ne++] = nEvent;
-                    addEventToUI(nEvent);
-
-                }
-            }
+            /*
+             * JTextField Name_Field = new JTextField();
+             * JTextField Date_Field = new JTextField();
+             * JTextField Location_Field = new JTextField();
+             * 
+             * JPanel panel = new JPanel(new GridLayout(0, 1)); // POP UP PANEL DESIGN
+             * panel.add(new JLabel("Event Name:"));
+             * panel.add(Name_Field);
+             * panel.add(new JLabel("Date:"));
+             * panel.add(Date_Field);
+             * panel.add(new JLabel("Location:"));
+             * panel.add(Location_Field);
+             * 
+             * int result = JOptionPane.showConfirmDialog(this, panel, "Create New Event",
+             * JOptionPane.OK_CANCEL_OPTION);
+             * if (result == JOptionPane.OK_OPTION) { // IF USER PRESS OK
+             * String name = Name_Field.getText().trim();
+             * String date = Date_Field.getText().trim();
+             * String location = Location_Field.getText().trim();
+             * 
+             * if (!name.isEmpty() && !date.isEmpty() && !location.isEmpty()) { // CHECKS IF
+             * NAME, DATE, LOCATION IS
+             * // EMPTY OR NOT
+             * Events nEvent = new Events(name, location, date);
+             * EventsDataBase.Available_Events[EventsDataBase.ne++] = nEvent;
+             * addEventToUI(nEvent);
+             * 
+             * }
+             * }
+             */
         }
         mainPanel.revalidate();
         mainPanel.repaint();
