@@ -49,19 +49,17 @@ public class HomePage extends JFrame implements ActionListener {
     int simpleEventY = 285; // where to place next event label
 
     // get all user data from seission and assign them to the variables
-    private int userId = Session.getUserId();    
+    private int userId = Session.getUserId();
     private String username = Session.getUsername();
     private String email = Session.getEmail();
     private String password = Session.getPassword();
     private String role = Session.getRole();
-
 
     private static final String[] DATES = { "date" };
     private static final String[] CATEGORIES = { "Category" };
     private static final String[] LOCATIONS = { "Location" };
 
     public HomePage() {
-        
 
         setTitle("Event Management - Home Page");
         setSize(1000, 600);
@@ -159,8 +157,6 @@ public class HomePage extends JFrame implements ActionListener {
         eventsPanel.setBounds(0, 140, 800, 400);
         eventsPanel.setBackground(Color.WHITE);
 
-        
-
         // ========== Tickets Panel and ITS DESIGN ============
 
         TicketsPanel ticketsSection = new TicketsPanel();
@@ -184,7 +180,7 @@ public class HomePage extends JFrame implements ActionListener {
         Profile_Label = profileSection.titleLabel;
         User_Name_Label = profileSection.usernameLabel;
         Email_Label = profileSection.emailLabel;
-        Password_Label = profileSection.passwordLabel;
+        // Password_Label = profileSection.passwordLabel; profile jump issue sovled
 
         // ============ Notification Panel and ITS DESIGN ============
 
@@ -204,7 +200,7 @@ public class HomePage extends JFrame implements ActionListener {
         // load event in home
 
         for (models.Event e : EventService.getAllEvents()) {
-            content.addEventCard(e.getEventId(),e.getName(), e.getLocation(), e.getDate());
+            content.addEventCard(e.getEventId(), e.getName(), e.getLocation(), e.getDate());
         }
 
         content.searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
@@ -220,8 +216,6 @@ public class HomePage extends JFrame implements ActionListener {
                 content.searchEvents(content.searchField.getText());
             }
         });
-
-        
 
     }
 
@@ -240,7 +234,7 @@ public class HomePage extends JFrame implements ActionListener {
             mainPanel.add(Profile_Panel, BorderLayout.CENTER);
             User_Name_Label.setText("User Name: " + username);
             Email_Label.setText("User Email: " + email);
-            Password_Label.setText("User Password: " + password);
+            Password_Label.setText("User Password: *******");
         } else if (e.getSource() == Notification_Button) { // === GOES TO NOTIFICATION PANEL ===
             mainPanel.add(Notification_Panel, BorderLayout.CENTER);
         } else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
@@ -309,9 +303,12 @@ public class HomePage extends JFrame implements ActionListener {
             }
         });
 
-        Event_Management_Panel.add(newEventButton);
-        Event_Management_Panel.repaint();
-        simpleEventY += 50;
+        /*
+         * Event_Management_Panel.add(newEventButton); //deleting this fixed the events
+         * showing in the back of the scrollpane
+         * Event_Management_Panel.repaint();
+         * simpleEventY += 50;
+         */
 
         // Refresh events on home
         eventsPanel.removeAll();
@@ -359,5 +356,4 @@ public class HomePage extends JFrame implements ActionListener {
         }
     }
 
-    
 }

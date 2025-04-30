@@ -3,10 +3,10 @@ package sections;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Date;
-import auth.Session; 
+import auth.Session;
 
-import services.EventService; 
-import java.sql.Timestamp; 
+import services.EventService;
+import java.sql.Timestamp;
 import services.RegistrationService;
 
 import java.util.List;
@@ -15,9 +15,7 @@ public class EventManagementPanel extends JPanel {
     public JLabel titleLabel, registeredLabel, yourEventsLabel;
     public JButton createEventButton;
     public JPanel registeredBox;
-    public JPanel eventListPanel; 
-
-
+    public JPanel eventListPanel;
 
     public EventManagementPanel() {
 
@@ -45,21 +43,23 @@ public class EventManagementPanel extends JPanel {
             createEventButton.setVisible(false);
         }
 
-        registeredBox = new JPanel();
-        registeredBox.setLayout(new BoxLayout(registeredBox, BoxLayout.Y_AXIS));
-        registeredBox.setBackground(Color.WHITE);
-        
-        JScrollPane registeredScrollPane = new JScrollPane(registeredBox);
-        registeredScrollPane.setBounds(20, 180, 740, 380); // Bigger height
-        registeredScrollPane.setBorder(BorderFactory.createTitledBorder("your events:"));
-        registeredScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        
-        add(registeredScrollPane);
-        
+        /*
+         * registeredBox = new JPanel();
+         * registeredBox.setLayout(new BoxLayout(registeredBox, BoxLayout.Y_AXIS));
+         * registeredBox.setBackground(Color.WHITE);
+         * 
+         * JScrollPane registeredScrollPane = new JScrollPane(registeredBox);
+         * registeredScrollPane.setBounds(20, 180, 740, 380); // Bigger height
+         * registeredScrollPane.setBorder(BorderFactory.
+         * createTitledBorder("your events:"));
+         * registeredScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+         * 
+         * add(registeredScrollPane);
+         */
+
         eventListPanel = new JPanel();
         eventListPanel.setLayout(new BoxLayout(eventListPanel, BoxLayout.Y_AXIS));
         eventListPanel.setBackground(Color.WHITE);
-
 
         JScrollPane scrollPane = new JScrollPane(eventListPanel);
         scrollPane.setBounds(20, 270, 740, 250);
@@ -68,7 +68,7 @@ public class EventManagementPanel extends JPanel {
 
         add(scrollPane);
 
-        loadCreatedEvents(); 
+        loadCreatedEvents();
     }
 
     // this method creates an event and saves it to the database
@@ -79,19 +79,18 @@ public class EventManagementPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Failed to create event.");
         }
     }
-    
-    
+
     // this method opens a dialog to create an event
     private void openCreateEventDialog() {
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        
+
         JTextField eventNameField = new JTextField();
         JTextField locationField = new JTextField();
         JTextField totalSeatsField = new JTextField();
         JSpinner dateSpinner = new JSpinner(new SpinnerDateModel());
         JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd HH:mm:ss");
         dateSpinner.setEditor(timeEditor);
-    
+
         panel.add(new JLabel("Event Name:"));
         panel.add(eventNameField);
         panel.add(new JLabel("Location:"));
@@ -101,17 +100,16 @@ public class EventManagementPanel extends JPanel {
         panel.add(new JLabel("Total Seats:"));
         panel.add(totalSeatsField);
 
-    
         int result = JOptionPane.showConfirmDialog(this, panel, "Create Event",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-    
+
         if (result == JOptionPane.OK_OPTION) {
             int totalSeats = Integer.parseInt(totalSeatsField.getText());
 
             String eventName = eventNameField.getText();
             String location = locationField.getText();
             Date date = (Date) dateSpinner.getValue();
-            
+
             // Save to database
             createEvent(eventName, location, new java.sql.Timestamp(date.getTime()), totalSeats);
         }
@@ -119,49 +117,50 @@ public class EventManagementPanel extends JPanel {
 
     // this method loads the events registered by the user
     // public void loadRegisteredEvents() {
-    //     registeredBox.removeAll(); 
-    
-    //     List<RegistrationService.RegisteredEvent> registeredEvents = RegistrationService.getRegisteredEvents(Session.getUserId());
-    
-    //     if (registeredEvents.isEmpty()) {
-    //         JLabel emptyLabel = new JLabel("No events registered.");
-    //         emptyLabel.setFont(new Font("Arial", Font.ITALIC, 14));
-    //         emptyLabel.setForeground(Color.GRAY);
-    //         registeredBox.add(emptyLabel);
-    //     } else {
-    //         for (RegistrationService.RegisteredEvent event : registeredEvents) {
-    //             JPanel eventPanel = new JPanel(new GridLayout(0, 1));
-    //             eventPanel.setBackground(Color.LIGHT_GRAY);
-    //             eventPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-    
-    //             JLabel nameLabel = new JLabel("[Event Name] " + event.getEventName());
-    //             nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-    
-    //             JLabel locationLabel = new JLabel("[Location] " + event.getLocation());
-    //             locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-    
-    //             JLabel dateLabel = new JLabel("[Time] " + event.getFormattedDate());
-    //             dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-    //             dateLabel.setForeground(Color.DARK_GRAY);
-    
-    //             eventPanel.add(nameLabel);
-    //             eventPanel.add(locationLabel);
-    //             eventPanel.add(dateLabel);
-    
-    //             registeredBox.add(Box.createVerticalStrut(10));
-    //             registeredBox.add(eventPanel);
-    //         }
-    //     }
-    
-    //     registeredBox.revalidate();
-    //     registeredBox.repaint();
+    // registeredBox.removeAll();
+
+    // List<RegistrationService.RegisteredEvent> registeredEvents =
+    // RegistrationService.getRegisteredEvents(Session.getUserId());
+
+    // if (registeredEvents.isEmpty()) {
+    // JLabel emptyLabel = new JLabel("No events registered.");
+    // emptyLabel.setFont(new Font("Arial", Font.ITALIC, 14));
+    // emptyLabel.setForeground(Color.GRAY);
+    // registeredBox.add(emptyLabel);
+    // } else {
+    // for (RegistrationService.RegisteredEvent event : registeredEvents) {
+    // JPanel eventPanel = new JPanel(new GridLayout(0, 1));
+    // eventPanel.setBackground(Color.LIGHT_GRAY);
+    // eventPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+    // JLabel nameLabel = new JLabel("[Event Name] " + event.getEventName());
+    // nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
+    // JLabel locationLabel = new JLabel("[Location] " + event.getLocation());
+    // locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+
+    // JLabel dateLabel = new JLabel("[Time] " + event.getFormattedDate());
+    // dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+    // dateLabel.setForeground(Color.DARK_GRAY);
+
+    // eventPanel.add(nameLabel);
+    // eventPanel.add(locationLabel);
+    // eventPanel.add(dateLabel);
+
+    // registeredBox.add(Box.createVerticalStrut(10));
+    // registeredBox.add(eventPanel);
     // }
-    
+    // }
+
+    // registeredBox.revalidate();
+    // registeredBox.repaint();
+    // }
+
     // this method loads the events created by the organizer
     public void loadCreatedEvents() {
         System.out.println("Organizer ID: " + Session.getUserId());
         eventListPanel.removeAll();
-    
+
         List<EventService.CreatedEvent> createdEvents = EventService.getCreatedEvents(Session.getUserId());
         System.out.println("Created Events Found: " + createdEvents.size());
 
@@ -177,39 +176,38 @@ public class EventManagementPanel extends JPanel {
                 eventBox.setBackground(Color.LIGHT_GRAY);
                 eventBox.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
                 eventBox.setMaximumSize(new Dimension(720, 80));
-    
+
                 JLabel nameLabel = new JLabel("[Event Name] " + event.getName());
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-    
+
                 JLabel locationLabel = new JLabel("[Location] " + event.getLocation());
                 locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-    
+
                 JLabel dateLabel = new JLabel("[Date] " + event.getDate());
                 dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
                 dateLabel.setForeground(Color.DARK_GRAY);
-    
+
                 eventBox.add(nameLabel);
                 eventBox.add(locationLabel);
                 eventBox.add(dateLabel);
-    
+
                 eventListPanel.add(Box.createVerticalStrut(10));
                 eventListPanel.add(eventBox);
             }
         }
-    
+
         eventListPanel.revalidate();
         eventListPanel.repaint();
     }
-    
 
     // private String formatDate(String rawDate) {
-    //     try {
-    //         SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    //         SimpleDateFormat output = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
-    //         Date date = input.parse(rawDate);
-    //         return output.format(date);
-    //     } catch (ParseException e) {
-    //         return rawDate;
-    //     }
+    // try {
+    // SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // SimpleDateFormat output = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
+    // Date date = input.parse(rawDate);
+    // return output.format(date);
+    // } catch (ParseException e) {
+    // return rawDate;
+    // }
     // }
 }
