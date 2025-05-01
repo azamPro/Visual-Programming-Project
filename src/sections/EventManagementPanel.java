@@ -177,8 +177,7 @@ public class EventManagementPanel extends JPanel {
                 eventBox.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
                 eventBox.setMaximumSize(new Dimension(720, 80));
 
-                //////// delete this for edit ////////////
-                ///
+                //////// this for edit ////////////
                 /*
                  * JButton edit_Button = new JButton("Edit");
                  * edit_Button.addActionListener(ev -> {
