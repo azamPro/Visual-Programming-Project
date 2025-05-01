@@ -62,7 +62,7 @@ public class EventManagementPanel extends JPanel {
         eventListPanel.setBackground(Color.WHITE);
 
         JScrollPane scrollPane = new JScrollPane(eventListPanel);
-        scrollPane.setBounds(20, 270, 740, 250);
+        scrollPane.setBounds(20, 180, 740, 350);
         scrollPane.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
@@ -177,6 +177,42 @@ public class EventManagementPanel extends JPanel {
                 eventBox.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
                 eventBox.setMaximumSize(new Dimension(720, 80));
 
+                //////// delete this for edit ////////////
+                ///
+                /*
+                 * JButton edit_Button = new JButton("Edit");
+                 * edit_Button.addActionListener(ev -> {
+                 * JTextField nameField = new JTextField(event.name);
+                 * JTextField dateField = new JTextField(event.date);
+                 * JTextField locationField = new JTextField(event.location);
+                 * 
+                 * JPanel editPanel = new JPanel(new GridLayout(0, 1));
+                 * editPanel.add(new JLabel("Event Name:"));
+                 * editPanel.add(nameField);
+                 * editPanel.add(new JLabel("Date:"));
+                 * editPanel.add(dateField);
+                 * editPanel.add(new JLabel("Location:"));
+                 * editPanel.add(locationField);
+                 * 
+                 * int result = JOptionPane.showConfirmDialog(null, editPanel, "Edit Event",
+                 * JOptionPane.OK_CANCEL_OPTION);
+                 * if (result == JOptionPane.OK_OPTION) {
+                 * event.name = nameField.getText().trim();
+                 * event.date = dateField.getText().trim();
+                 * event.location = locationField.getText().trim();
+                 * edit_Button.setText(event.name + " @ " + event.location + " - " +
+                 * event.date);
+                 * }
+                 * });
+                 */
+                //////////
+
+                JButton delete_Button = new JButton("delete");
+                delete_Button.setPreferredSize(new Dimension(60, 25)); // Smaller size
+                delete_Button.setFocusPainted(false); // Removes dotted focus border
+                delete_Button.setBorderPainted(true); // Removes button border
+                delete_Button.setContentAreaFilled(false); // Optional: removes background fill for cleaner look
+
                 JLabel nameLabel = new JLabel("[Event Name] " + event.getName());
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
@@ -186,7 +222,8 @@ public class EventManagementPanel extends JPanel {
                 JLabel dateLabel = new JLabel("[Date] " + event.getDate());
                 dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
                 dateLabel.setForeground(Color.DARK_GRAY);
-
+                // eventBox.add(edit_Button);
+                eventBox.add(delete_Button);//
                 eventBox.add(nameLabel);
                 eventBox.add(locationLabel);
                 eventBox.add(dateLabel);
