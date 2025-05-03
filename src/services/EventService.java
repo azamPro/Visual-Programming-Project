@@ -20,8 +20,10 @@ import auth.Session;
 public class EventService {
     public static ArrayList<Event> getAllEvents() {
         ArrayList<Event> events = new ArrayList<>();
-        String sql = "SELECT e.event_name, e.event_id, e.location, e.date, c.category_name " +
-        "FROM events e JOIN categories c ON e.category_id = c.category_id";
+        // String sql = "SELECT e.event_name, e.event_id, e.location, e.date, c.category_name " +
+        // "FROM events e JOIN categories c ON e.category_id = c.category_id";
+        String sql = "SELECT e.event_name, e.event_id, e.location, e.date, c.category_name, e.total_seats " +
+             "FROM events e JOIN categories c ON e.category_id = c.category_id";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -32,7 +34,8 @@ public class EventService {
                         rs.getString("event_name"),
                         rs.getString("location"),
                         rs.getString("date"),
-                        rs.getString("category_name")
+                        rs.getString("category_name"),
+                        rs.getInt("total_seats")
                     );
                     events.add(e);
                 }
@@ -126,47 +129,109 @@ public class EventService {
         }
     }
     
-    // New class inside EventService
-public static class CreatedEvent {
-    private int eventId;
-    private String name;
-    private String location;
-    private String date;
+    public static class CreatedEvent {
+        private int eventId;
+        private String name;
+        private String location;
+        private String date;
+        private int totalSeats;
+        
+        public CreatedEvent(int eventId, String name, String location, String date, int totalSeats) {
+            this.eventId = eventId;
+            this.name = name;
+            this.location = location;
+            this.date = date;
+            this.totalSeats = totalSeats;
+        }
+        public CreatedEvent(int eventId, String name, String location, String date) {
+            this.eventId = eventId;
+            this.name = name;
+            this.location = location;
+            this.date = date;
+        }
 
-    public CreatedEvent(int eventId, String name, String location, String date) {
-        this.eventId = eventId;
-        this.name = name;
-        this.location = location;
-        this.date = date;
+        public int getEventId() { return eventId; }
+        public String getName() { return name; }
+        public String getLocation() { return location; }
+        public String getDate() { return date; }
+        public int getTotalSeats() { return totalSeats; }
     }
-
-    public int getEventId() { return eventId; }
-    public String getName() { return name; }
-    public String getLocation() { return location; }
-    public String getDate() { return date; }
-}
 
     public static List<CreatedEvent> getCreatedEvents(int organizerId) {
-    List<CreatedEvent> list = new ArrayList<>();
-    String sql = "SELECT event_id, event_name, location, date FROM events WHERE organizer_id = ?";
+        List<CreatedEvent> list = new ArrayList<>();
+        String sql = "SELECT event_id, event_name, location, date ,total_seats FROM events WHERE organizer_id = ?";
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, organizerId);
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            list.add(new CreatedEvent(
-                rs.getInt("event_id"),
-                rs.getString("event_name"),
-                rs.getString("location"),
-                rs.getString("date")
-            ));
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, organizerId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(new CreatedEvent(
+                    rs.getInt("event_id"),
+                    rs.getString("event_name"),
+                    rs.getString("location"),
+                    rs.getString("date"),
+                    rs.getInt("total_seats")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
+
+    public static boolean deleteEvent(int eventId) {
+        String deleteRegistrations = "DELETE FROM registrations WHERE event_id = ?";
+        String deleteNotifications = "DELETE FROM notifications WHERE event_id = ?";
+        String deleteEvent = "DELETE FROM events WHERE event_id = ?";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmt1 = conn.prepareStatement(deleteRegistrations);
+                PreparedStatement stmt2 = conn.prepareStatement(deleteNotifications);
+                PreparedStatement stmt3 = conn.prepareStatement(deleteEvent)) {
+
+                stmt1.setInt(1, eventId);
+                stmt1.executeUpdate();
+
+                stmt2.setInt(1, eventId);
+                stmt2.executeUpdate();
+
+                stmt3.setInt(1, eventId);
+                int rows = stmt3.executeUpdate();
+
+                conn.commit();
+                return rows > 0;
+            } catch (SQLException e) {
+                conn.rollback();
+                e.printStackTrace();
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateEvent(int eventId, String name, String location, Timestamp dateTime, int totalSeats) {
+        String sql = "UPDATE events SET event_name = ?, location = ?, date = ?, total_seats = ?, updated_at = NOW() WHERE event_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setString(2, location);
+            stmt.setTimestamp(3, dateTime);
+            stmt.setInt(4, totalSeats);
+            stmt.setInt(5, eventId);
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 
 

@@ -11,8 +11,9 @@ import java.sql.Timestamp;
 import services.RegistrationService;
 
 import java.util.List;
+import models.Event;
 
-public class EventManagementPanel extends JPanel implements ActionListener {
+public class EventManagementPanel extends JPanel {
     public JLabel titleLabel, registeredLabel, yourEventsLabel;
     public JButton createEventButton;
     public JPanel registeredBox;
@@ -83,16 +84,26 @@ public class EventManagementPanel extends JPanel implements ActionListener {
     }
 
     // to edit an existing event
-    private void openEditEventDialog() {
+    private void openEditEventDialog(EventService.CreatedEvent event) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
 
-        JTextField eventNameField = new JTextField();
-        JTextField locationField = new JTextField();
-        JTextField totalSeatsField = new JTextField();
+       // Prefill current event data
+        JTextField eventNameField = new JTextField(event.getName());
+        JTextField locationField = new JTextField(event.getLocation());
+        JTextField totalSeatsField = new JTextField(String.valueOf(event.getTotalSeats()));
+
+        // Setup date spinner with current value
         JSpinner dateSpinner = new JSpinner(new SpinnerDateModel());
         JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd HH:mm:ss");
         dateSpinner.setEditor(timeEditor);
 
+        try {
+            java.util.Date parsedDate = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(event.getDate());
+            dateSpinner.setValue(parsedDate);
+        } catch (Exception e) {
+            dateSpinner.setValue(new java.util.Date()); // fallback
+        }
+        
         panel.add(new JLabel("Event Name:"));
         panel.add(eventNameField);
         panel.add(new JLabel("Location:"));
@@ -102,18 +113,38 @@ public class EventManagementPanel extends JPanel implements ActionListener {
         panel.add(new JLabel("Total Seats:"));
         panel.add(totalSeatsField);
 
+
         int result = JOptionPane.showConfirmDialog(this, panel, "Edit Event",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
-            int totalSeats = Integer.parseInt(totalSeatsField.getText());
+            try {
+                String newName = eventNameField.getText().trim();
+                String newLocation = locationField.getText().trim();
+                int newSeats = Integer.parseInt(totalSeatsField.getText().trim());
+                java.util.Date newDate = (java.util.Date) dateSpinner.getValue();
 
-            String eventName = eventNameField.getText();
-            String location = locationField.getText();
-            Date date = (Date) dateSpinner.getValue();
+                boolean updated = EventService.updateEvent(
+                    event.getEventId(),
+                    newName,
+                    newLocation,
+                    new java.sql.Timestamp(newDate.getTime()),
+                    newSeats
+                );
+
+                if (updated) {
+                    JOptionPane.showMessageDialog(this, "Event updated successfully!");
+                    loadCreatedEvents(); // ✅ refresh the UI
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update event.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            }
 
         }
-    }
+            }
 
     // this method opens a dialog to create an event
     private void openCreateEventDialog() {
@@ -250,8 +281,9 @@ public class EventManagementPanel extends JPanel implements ActionListener {
                 edit_Button.setContentAreaFilled(false);
                 // edit
                 edit_Button.addActionListener(ev -> {
-                    openEditEventDialog();
+                    openEditEventDialog(event);
                 });
+                
 
                 JButton delete_Button = new JButton("delete");
                 delete_Button.setPreferredSize(new Dimension(60, 45)); // Smaller size
@@ -260,9 +292,23 @@ public class EventManagementPanel extends JPanel implements ActionListener {
                 delete_Button.setContentAreaFilled(false); // Optional: removes background fill for cleaner look
                 // delete event button comformation
                 delete_Button.addActionListener(ev -> {
-                    JOptionPane.showConfirmDialog(null, "Are you sure that you want to delete the event", "delete",
-                            JOptionPane.YES_NO_OPTION);
+                    int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure you want to delete this event?",
+                        "Delete Confirmation",
+                        JOptionPane.YES_NO_OPTION
+                    );
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        boolean deleted = EventService.deleteEvent(event.getEventId());
+                        if (deleted) {
+                            JOptionPane.showMessageDialog(null, "Event deleted successfully!");
+                            loadCreatedEvents(); // Refresh the list
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Failed to delete event.");
+                        }
+                    }
                 });
+                
                 //
                 JLabel nameLabel = new JLabel("[Event Name] " + event.getName());
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -288,4 +334,5 @@ public class EventManagementPanel extends JPanel implements ActionListener {
         eventListPanel.repaint();
     }
 
+    
 }

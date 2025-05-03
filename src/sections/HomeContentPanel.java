@@ -145,20 +145,20 @@ public class HomeContentPanel extends JPanel {
         eventsPanel.repaint();
     }
 
-    private String formatDate(String rawDate) {
-        if (rawDate == null || rawDate.trim().isEmpty())
-            return "Unknown";
+    // private String formatDate(String rawDate) {
+    //     if (rawDate == null || rawDate.trim().isEmpty())
+    //         return "Unknown";
 
-        try {
-            SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    //     try {
+    //         SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            SimpleDateFormat output = new SimpleDateFormat("MMM dd, yyyy - hh:mm a");
-            Date date = input.parse(rawDate);
-            return output.format(date);
-        } catch (ParseException e) {
-            return rawDate;
-        }
-    }
+    //         SimpleDateFormat output = new SimpleDateFormat("MMM dd, yyyy - hh:mm a");
+    //         Date date = input.parse(rawDate);
+    //         return output.format(date);
+    //     } catch (ParseException e) {
+    //         return rawDate;
+    //     }
+    // }
 
     public void searchEvents(String keyword) {
         eventsPanel.removeAll();
