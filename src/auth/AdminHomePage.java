@@ -1,13 +1,10 @@
 package auth;
 import javax.swing.*;
-
-import db.DBConnection;
-
 import java.awt.*;
 import java.awt.event.*;
-
+import java.util.List;
+import services.EventService;
 import services.AdminService;
-
 
 public class AdminHomePage extends JFrame{
     private JButton HomeButton , EventsButton,UsersButton;
@@ -54,16 +51,6 @@ public class AdminHomePage extends JFrame{
     
         setVisible(true);
     }
-    
-    // Set home content
-    // private void setHomeContent() {
-    //     contentPanel.removeAll();
-    //     JLabel homeLabel = new JLabel("Welcome to Admin Dashboard", SwingConstants.CENTER);
-    //     homeLabel.setFont(new Font("Arial", Font.BOLD, 24));
-    //     contentPanel.add(homeLabel, BorderLayout.CENTER);
-    //     contentPanel.revalidate();
-    //     contentPanel.repaint();
-    // }
 
     private void setHomeContent() {
         contentPanel.removeAll();
