@@ -17,7 +17,7 @@ public class SideMenuPanel extends JPanel {
         eventMgmtButton = createButton("Event Management", listener);
         profileButton = createButton("Profile", listener);
         notificationsButton = createButton("Notifications", listener);
-
+        
         
 
         add(homeButton);

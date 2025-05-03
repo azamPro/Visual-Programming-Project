@@ -226,22 +226,19 @@ public class HomePage extends JFrame implements ActionListener {
         // this code below is mohammed work we have to enhance it after azzam sprate the
         // compnenet of homepage
         mainPanel.removeAll();
-        if (e.getSource() == Home_Button) { // === RETURNS TO HOME PANEL ===
-            mainPanel.add(contentPanel, BorderLayout.CENTER);
-            //
-
+        if (e.getSource() == Home_Button) {
             content.eventsPanel.removeAll();
+        
             for (models.Event ev : EventService.getAllEvents()) {
                 content.addEventCard(ev.getEventId(), ev.getName(), ev.getLocation(), ev.getDate());
             }
+        
             content.eventsPanel.revalidate();
             content.eventsPanel.repaint();
-
+        
             mainPanel.add(contentPanel, BorderLayout.CENTER);
-
-            //
-
-        } else if (e.getSource() == Tickets_Button) { // ==== GOES TO TICKETS PANEL ===
+        }
+         else if (e.getSource() == Tickets_Button) { // ==== GOES TO TICKETS PANEL ===
             TicketsPanel newTicketsPanel = new TicketsPanel(); // create fresh instance (refresh)
             Tickets_Panel = newTicketsPanel;
             mainPanel.add(Tickets_Panel, BorderLayout.CENTER);
@@ -253,9 +250,13 @@ public class HomePage extends JFrame implements ActionListener {
             User_Name_Label.setText("User Name: " + username);
             Email_Label.setText("User Email: " + email);
             Password_Label.setText("User Password: *******");
-        } else if (e.getSource() == Notification_Button) { // === GOES TO NOTIFICATION PANEL ===
+        } else if (e.getSource() == Notification_Button) {
+            NotificationPanel newNotifPanel = new NotificationPanel(); // 🔄 fresh panel with updated data
+            Notification_Panel = newNotifPanel;
             mainPanel.add(Notification_Panel, BorderLayout.CENTER);
-        } else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
+        }
+
+         else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
                                                            // TO CREATE EVENT ===
 
             /*
@@ -367,6 +368,7 @@ public class HomePage extends JFrame implements ActionListener {
                 String date = rs.getString("date");
 
                 Events event = new Events(name, location, date);
+                // Events event = new Event(name, location, date, category, totalSeats);
                 addEventToUI(event); // reuse your helper
             }
 
