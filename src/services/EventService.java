@@ -232,6 +232,41 @@ public class EventService {
         }
     }
 
+    // public static boolean deleteEventById(int eventId) {
+    //     String deleteRegistrations = "DELETE FROM registrations WHERE event_id = ?";
+    //     String deleteNotifications = "DELETE FROM notifications WHERE event_id = ?";
+    //     String deleteEvent = "DELETE FROM events WHERE event_id = ?";
+    
+    //     try (Connection conn = DBConnection.getConnection()) {
+    //         conn.setAutoCommit(false);
+    
+    //         try (PreparedStatement stmt1 = conn.prepareStatement(deleteRegistrations);
+    //              PreparedStatement stmt2 = conn.prepareStatement(deleteNotifications);
+    //              PreparedStatement stmt3 = conn.prepareStatement(deleteEvent)) {
+    
+    //             stmt1.setInt(1, eventId);
+    //             stmt1.executeUpdate();
+    
+    //             stmt2.setInt(1, eventId);
+    //             stmt2.executeUpdate();
+    
+    //             stmt3.setInt(1, eventId);
+    //             int rows = stmt3.executeUpdate();
+    
+    //             conn.commit();
+    //             return rows > 0;
+    //         } catch (SQLException e) {
+    //             conn.rollback();
+    //             e.printStackTrace();
+    //             return false;
+    //         }
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //         return false;
+    //     }
+    // }
+    
+
 
 
 

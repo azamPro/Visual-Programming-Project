@@ -7,6 +7,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 
 import db.DBConnection;
+import services.AdminService;
 
 public class EventsPanel extends JPanel {
 
@@ -27,13 +28,21 @@ public class EventsPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
 
         // Create table model with column names
-        String[] columnNames = {"Name", "Date", "Location", "Description", "Total Seats", "Availability"};
+        // String[] columnNames = {"Name", "Date", "Location", "Description", "Total Seats", "Availability"};
+        // tableModel = new DefaultTableModel(columnNames, 0) {
+        //     @Override
+        //     public boolean isCellEditable(int row, int column) {
+        //         return false; // Make cells non-editable
+        //     }
+        // };
+        String[] columnNames = {"ID", "Name", "Date", "Location", "Description", "Total Seats", "Availability", "Action"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Make cells non-editable
+                return column == 7; // only "Action" column editable (button)
             }
         };
+        
 
         // Create the table and apply the model
         eventsTable = new JTable(tableModel);
@@ -64,6 +73,46 @@ public class EventsPanel extends JPanel {
         // Use a custom renderer for the "Description" column to allow multi-line text
         eventsTable.getColumnModel().getColumn(3).setCellRenderer(new TextAreaRenderer());
 
+        eventsTable.removeColumn(eventsTable.getColumnModel().getColumn(0)); // hides event_id
+
+        eventsTable.getColumn("Action").setCellRenderer(new ButtonRenderer());
+eventsTable.getColumn("Action").setCellEditor(new DefaultCellEditor(new JCheckBox()) {
+    JButton button = new JButton("Delete");
+    int selectedRow;
+
+    {
+        button.setForeground(Color.RED);
+        button.setFocusPainted(false);
+        button.addActionListener(e -> {
+            int modelRow = eventsTable.convertRowIndexToModel(selectedRow);
+            int eventId = (int) tableModel.getValueAt(modelRow, 0); // hidden ID
+            String eventTitle = (String) tableModel.getValueAt(modelRow, 1); // column 1 is Name
+            
+            int confirm = JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to delete the event \"" + eventTitle + "\"?",
+                    "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+                        if (confirm == JOptionPane.YES_OPTION) {
+                boolean deleted = AdminService.deleteEventById(eventId);
+                if (deleted) {
+                    tableModel.removeRow(modelRow);
+                    JOptionPane.showMessageDialog(null, "Event deleted.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to delete event.");
+                }
+            }
+        });
+    }
+
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        selectedRow = row;
+        return button;
+    }
+
+    public Object getCellEditorValue() {
+        return "Delete";
+    }
+});
+
         // Populate the table with data from the database
         loadEventsData();
 
@@ -75,13 +124,15 @@ public class EventsPanel extends JPanel {
 
     private void loadEventsData() {
         try (Connection conn = DBConnection.getConnection()) {
-            String sql = "SELECT event_name, date, location, description, total_seats, availablity FROM events";
+            // String sql = "SELECT event_name, date, location, description, total_seats, availablity FROM events";
+            String sql = "SELECT event_id, event_name, date, location, description, total_seats, availablity FROM events";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
             while (rs.next()) {
+                int id = rs.getInt("event_id");
                 String name = rs.getString("event_name");
                 Timestamp dateTS = rs.getTimestamp("date");
                 String dateStr = (dateTS != null) ? sdf.format(dateTS) : "";
@@ -90,16 +141,13 @@ public class EventsPanel extends JPanel {
                 int totalSeats = rs.getInt("total_seats");
                 boolean available = rs.getBoolean("availablity");
                 String availableStr = available ? "Yes" : "No";
-
+            
                 tableModel.addRow(new Object[] {
-                    name,
-                    dateStr,
-                    location,
-                    description,
-                    totalSeats,
-                    availableStr
+                    id, name, dateStr, location, description, totalSeats, availableStr, "Delete"
                 });
             }
+            
+            // eventsTable.removeColumn(eventsTable.getColumnModel().getColumn(0)); // hides event_id
 
             rs.close();
             stmt.close();
@@ -141,5 +189,21 @@ public class EventsPanel extends JPanel {
             return this;
         }
     }
+
+    private static class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+            setForeground(Color.RED);
+            setBackground(Color.WHITE);
+            setFont(new Font("Arial", Font.BOLD, 12));
+        }
+    
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            setText(value == null ? "Delete" : value.toString());
+            return this;
+        }
+    }
+    
 }
 
