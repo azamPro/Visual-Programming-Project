@@ -2,6 +2,7 @@ package sections;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Date;
 import auth.Session;
 
@@ -11,7 +12,7 @@ import services.RegistrationService;
 
 import java.util.List;
 
-public class EventManagementPanel extends JPanel {
+public class EventManagementPanel extends JPanel implements ActionListener {
     public JLabel titleLabel, registeredLabel, yourEventsLabel;
     public JButton createEventButton;
     public JPanel registeredBox;
@@ -77,6 +78,39 @@ public class EventManagementPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Event created successfully!");
         } else {
             JOptionPane.showMessageDialog(this, "Failed to create event.");
+        }
+    }
+
+    // to edit an existing event
+    private void openEditEventDialog() {
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+
+        JTextField eventNameField = new JTextField();
+        JTextField locationField = new JTextField();
+        JTextField totalSeatsField = new JTextField();
+        JSpinner dateSpinner = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd HH:mm:ss");
+        dateSpinner.setEditor(timeEditor);
+
+        panel.add(new JLabel("Event Name:"));
+        panel.add(eventNameField);
+        panel.add(new JLabel("Location:"));
+        panel.add(locationField);
+        panel.add(new JLabel("Date and Time:"));
+        panel.add(dateSpinner);
+        panel.add(new JLabel("Total Seats:"));
+        panel.add(totalSeatsField);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Edit Event",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            int totalSeats = Integer.parseInt(totalSeatsField.getText());
+
+            String eventName = eventNameField.getText();
+            String location = locationField.getText();
+            Date date = (Date) dateSpinner.getValue();
+
         }
     }
 
@@ -205,13 +239,30 @@ public class EventManagementPanel extends JPanel {
                  * });
                  */
                 //////////
+                ///
+                ///
+
+                JButton edit_Button = new JButton("Edit");
+                edit_Button.setPreferredSize(new Dimension(60, 25)); // Smaller size
+                edit_Button.setFocusPainted(false); // Removes dotted focus border
+                edit_Button.setBorderPainted(true); // Removes button border
+                edit_Button.setContentAreaFilled(false);
+                // edit
+                edit_Button.addActionListener(ev -> {
+                    openEditEventDialog();
+                });
 
                 JButton delete_Button = new JButton("delete");
-                delete_Button.setPreferredSize(new Dimension(60, 25)); // Smaller size
+                delete_Button.setPreferredSize(new Dimension(60, 45)); // Smaller size
                 delete_Button.setFocusPainted(false); // Removes dotted focus border
                 delete_Button.setBorderPainted(true); // Removes button border
                 delete_Button.setContentAreaFilled(false); // Optional: removes background fill for cleaner look
-
+                // delete event button comformation
+                delete_Button.addActionListener(ev -> {
+                    JOptionPane.showConfirmDialog(null, "Are you sure that you want to delete the event", "delete",
+                            JOptionPane.YES_NO_OPTION);
+                });
+                //
                 JLabel nameLabel = new JLabel("[Event Name] " + event.getName());
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
@@ -221,7 +272,7 @@ public class EventManagementPanel extends JPanel {
                 JLabel dateLabel = new JLabel("[Date] " + event.getDate());
                 dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
                 dateLabel.setForeground(Color.DARK_GRAY);
-                // eventBox.add(edit_Button);
+                eventBox.add(edit_Button);
                 eventBox.add(delete_Button);//
                 eventBox.add(nameLabel);
                 eventBox.add(locationLabel);
@@ -236,14 +287,4 @@ public class EventManagementPanel extends JPanel {
         eventListPanel.repaint();
     }
 
-    // private String formatDate(String rawDate) {
-    // try {
-    // SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    // SimpleDateFormat output = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
-    // Date date = input.parse(rawDate);
-    // return output.format(date);
-    // } catch (ParseException e) {
-    // return rawDate;
-    // }
-    // }
 }
