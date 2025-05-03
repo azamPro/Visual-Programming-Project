@@ -237,94 +237,81 @@ public class EventManagementPanel extends JPanel {
             eventListPanel.add(emptyLabel);
         } else {
             for (EventService.CreatedEvent event : createdEvents) {
-                JPanel eventBox = new JPanel();
-                eventBox.setLayout(new BoxLayout(eventBox, BoxLayout.Y_AXIS));
-                eventBox.setBackground(Color.LIGHT_GRAY);
-                eventBox.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-                eventBox.setMaximumSize(new Dimension(720, 80));
-
-                //////// this for edit ////////////
-                /*
-                 * JButton edit_Button = new JButton("Edit");
-                 * edit_Button.addActionListener(ev -> {
-                 * JTextField nameField = new JTextField(event.name);
-                 * JTextField dateField = new JTextField(event.date);
-                 * JTextField locationField = new JTextField(event.location);
-                 * 
-                 * JPanel editPanel = new JPanel(new GridLayout(0, 1));
-                 * editPanel.add(new JLabel("Event Name:"));
-                 * editPanel.add(nameField);
-                 * editPanel.add(new JLabel("Date:"));
-                 * editPanel.add(dateField);
-                 * editPanel.add(new JLabel("Location:"));
-                 * editPanel.add(locationField);
-                 * 
-                 * int result = JOptionPane.showConfirmDialog(null, editPanel, "Edit Event",
-                 * JOptionPane.OK_CANCEL_OPTION);
-                 * if (result == JOptionPane.OK_OPTION) {
-                 * event.name = nameField.getText().trim();
-                 * event.date = dateField.getText().trim();
-                 * event.location = locationField.getText().trim();
-                 * edit_Button.setText(event.name + " @ " + event.location + " - " +
-                 * event.date);
-                 * }
-                 * });
-                 */
-                //////////
-                ///
-                ///
-
                 JButton edit_Button = new JButton("Edit");
-                edit_Button.setPreferredSize(new Dimension(60, 25)); // Smaller size
-                edit_Button.setFocusPainted(false); // Removes dotted focus border
-                edit_Button.setBorderPainted(true); // Removes button border
+                edit_Button.setPreferredSize(new Dimension(60, 25));
+                edit_Button.setFocusPainted(false);
+                edit_Button.setBorderPainted(true);
                 edit_Button.setContentAreaFilled(false);
-                // edit
                 edit_Button.addActionListener(ev -> {
                     openEditEventDialog(event);
                 });
-                
-
+    
                 JButton delete_Button = new JButton("delete");
-                delete_Button.setPreferredSize(new Dimension(60, 45)); // Smaller size
-                delete_Button.setFocusPainted(false); // Removes dotted focus border
-                delete_Button.setBorderPainted(true); // Removes button border
-                delete_Button.setContentAreaFilled(false); // Optional: removes background fill for cleaner look
-                // delete event button comformation
+                delete_Button.setPreferredSize(new Dimension(60, 45));
+                delete_Button.setFocusPainted(false);
+                delete_Button.setBorderPainted(true);
+                delete_Button.setContentAreaFilled(false);
                 delete_Button.addActionListener(ev -> {
                     int confirm = JOptionPane.showConfirmDialog(
-                        null,
-                        "Are you sure you want to delete this event?",
-                        "Delete Confirmation",
-                        JOptionPane.YES_NO_OPTION
+                            null,
+                            "Are you sure you want to delete this event?",
+                            "Delete Confirmation",
+                            JOptionPane.YES_NO_OPTION
                     );
                     if (confirm == JOptionPane.YES_OPTION) {
                         boolean deleted = EventService.deleteEvent(event.getEventId());
                         if (deleted) {
                             JOptionPane.showMessageDialog(null, "Event deleted successfully!");
-                            loadCreatedEvents(); // Refresh the list
+                            loadCreatedEvents();
                         } else {
                             JOptionPane.showMessageDialog(null, "Failed to delete event.");
                         }
                     }
                 });
-                
-                //
+    
+                // NEW LAYOUT STARTS HERE
+                JPanel eventBox = new JPanel(new BorderLayout());
+                eventBox.setBackground(Color.LIGHT_GRAY);
+                eventBox.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+                eventBox.setPreferredSize(new Dimension(720, 80));
+                eventBox.setMaximumSize(new Dimension(720, 80));
+                eventBox.setMinimumSize(new Dimension(720, 80));
+    
+                // LEFT SIDE: TEXT
+                JPanel textPanel = new JPanel();
+                textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+                textPanel.setBackground(Color.LIGHT_GRAY);
+    
                 JLabel nameLabel = new JLabel("[Event Name] " + event.getName());
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-
+    
                 JLabel locationLabel = new JLabel("[Location] " + event.getLocation());
                 locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-
+    
                 JLabel dateLabel = new JLabel("[Date] " + event.getDate());
                 dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
                 dateLabel.setForeground(Color.DARK_GRAY);
-                eventBox.add(edit_Button);
-                eventBox.add(delete_Button);//
-                eventBox.add(nameLabel);
-                eventBox.add(locationLabel);
-                eventBox.add(dateLabel);
-
+    
+                textPanel.add(nameLabel);
+                textPanel.add(locationLabel);
+                textPanel.add(dateLabel);
+    
+                // RIGHT SIDE: BUTTONS
+                JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+                buttonPanel.setBackground(Color.LIGHT_GRAY);
+                buttonPanel.setPreferredSize(new Dimension(100, 60));
+                buttonPanel.setMaximumSize(new Dimension(100, 60));
+    
+                edit_Button.setPreferredSize(new Dimension(90, 25));
+                delete_Button.setPreferredSize(new Dimension(90, 25));
+    
+                buttonPanel.add(edit_Button);
+                buttonPanel.add(delete_Button);
+    
+                eventBox.add(textPanel, BorderLayout.CENTER);
+                eventBox.add(buttonPanel, BorderLayout.EAST);
+                // NEW LAYOUT ENDS HERE
+    
                 eventListPanel.add(Box.createVerticalStrut(10));
                 eventListPanel.add(eventBox);
             }
