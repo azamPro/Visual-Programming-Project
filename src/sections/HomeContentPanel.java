@@ -22,7 +22,6 @@ public class HomeContentPanel extends JPanel {
     public JComboBox<String> dateBox, categoryBox, locationBox;
     public JPanel eventsPanel;
     public JLabel titleLabel;
-    
 
     public HomeContentPanel(String[] dates, String[] categories, String[] locations) {
         setLayout(null);
@@ -96,89 +95,92 @@ public class HomeContentPanel extends JPanel {
         eventsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
         eventsPanel.setBounds(0, 140, 800, 400);
         eventsPanel.setBackground(Color.WHITE);
+        eventsPanel.setPreferredSize(new Dimension(760, 1000));
+        // add(eventsPanel);
+        JScrollPane scrollPane = new JScrollPane(eventsPanel);
+        scrollPane.setBounds(0, 140, 800, 400);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        add(scrollPane);
 
-        add(eventsPanel);
-       
     }
-
 
     public void addEventCard(int eventId, String name, String location, String date) {
-        JButton  card = new JButton ();
-    card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-    card.setPreferredSize(new Dimension(200, 100));
-    card.setBackground(new Color(245, 245, 245));
-    card.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-        BorderFactory.createEmptyBorder(10, 10, 10, 10)
-    ));
+        JButton card = new JButton();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setPreferredSize(new Dimension(200, 100));
+        card.setBackground(new Color(245, 245, 245));
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-    JLabel nameLabel = new JLabel("Title: " + name);
-    nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        JLabel nameLabel = new JLabel("Title: " + name);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
-    JLabel locationLabel = new JLabel("Location: " + location);
-    locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        JLabel locationLabel = new JLabel("Location: " + location);
+        locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
 
-    JLabel dateLabel = new JLabel("Date: " + date);
-    dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-    dateLabel.setForeground(Color.DARK_GRAY);
+        JLabel dateLabel = new JLabel("Date: " + date);
+        dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+        dateLabel.setForeground(Color.DARK_GRAY);
 
-    card.add(nameLabel);
-    card.add(locationLabel);
-    card.add(dateLabel);
+        card.add(nameLabel);
+        card.add(locationLabel);
+        card.add(dateLabel);
 
-    card.addActionListener(e -> {
-        int result = JOptionPane.showConfirmDialog(
-            null,
-            "Do you want to attend \"" + name + "\"?",
-            "Register for Event",
-            JOptionPane.YES_NO_OPTION
-        );
+        card.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    "Do you want to attend \"" + name + "\"?",
+                    "Register for Event",
+                    JOptionPane.YES_NO_OPTION);
 
-        if (result == JOptionPane.YES_OPTION) {
-            EventService.registerUserForEvent(Session.getUserId(), eventId, Session.getUsername()); // call the method
-        }
-    });
+            if (result == JOptionPane.YES_OPTION) {
+                EventService.registerUserForEvent(Session.getUserId(), eventId, Session.getUsername()); // call the
+                                                                                                        // method
+            }
+        });
 
-    eventsPanel.add(card);
-    eventsPanel.revalidate();
-    eventsPanel.repaint();
-}
-
-private String formatDate(String rawDate) {
-    if (rawDate == null || rawDate.trim().isEmpty()) return "Unknown";
-
-    try {
-        SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        SimpleDateFormat output = new SimpleDateFormat("MMM dd, yyyy - hh:mm a"); 
-        Date date = input.parse(rawDate);
-        return output.format(date);
-    } catch (ParseException e) {
-        return rawDate;
+        eventsPanel.add(card);
+        eventsPanel.revalidate();
+        eventsPanel.repaint();
     }
-}
 
-public void searchEvents(String keyword) {
-    eventsPanel.removeAll();
-    keyword = keyword.toLowerCase().trim();
+    private String formatDate(String rawDate) {
+        if (rawDate == null || rawDate.trim().isEmpty())
+            return "Unknown";
 
-    boolean found = false;
-    for (Event ev : EventService.getAllEvents()) {
-        if (ev.getName().toLowerCase().contains(keyword)) {
-            addEventCard(ev.getEventId(),ev.getName(), ev.getLocation(), ev.getDate());
-            found = true;
+        try {
+            SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            SimpleDateFormat output = new SimpleDateFormat("MMM dd, yyyy - hh:mm a");
+            Date date = input.parse(rawDate);
+            return output.format(date);
+        } catch (ParseException e) {
+            return rawDate;
         }
     }
 
-    if (!found) {
-        JLabel noResults = new JLabel("No events found.");
-        noResults.setFont(new Font("Arial", Font.BOLD, 14));
-        noResults.setForeground(Color.RED);
-        eventsPanel.add(noResults);
-    }
+    public void searchEvents(String keyword) {
+        eventsPanel.removeAll();
+        keyword = keyword.toLowerCase().trim();
 
-    eventsPanel.revalidate();
-    eventsPanel.repaint();
-}
+        boolean found = false;
+        for (Event ev : EventService.getAllEvents()) {
+            if (ev.getName().toLowerCase().contains(keyword)) {
+                addEventCard(ev.getEventId(), ev.getName(), ev.getLocation(), ev.getDate());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            JLabel noResults = new JLabel("No events found.");
+            noResults.setFont(new Font("Arial", Font.BOLD, 14));
+            noResults.setForeground(Color.RED);
+            eventsPanel.add(noResults);
+        }
+
+        eventsPanel.revalidate();
+        eventsPanel.repaint();
+    }
 
 }

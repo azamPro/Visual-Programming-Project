@@ -165,11 +165,8 @@ public class Login extends JFrame implements ActionListener {
                 }
         
                 // Only shows when login is valid
-                
-
 
                     } catch (AuthException e1) {
-                // showError(e1.getMessage());
                 JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

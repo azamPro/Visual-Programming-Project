@@ -76,6 +76,7 @@ public class EventManagementPanel extends JPanel implements ActionListener {
     private void createEvent(String eventName, String location, Timestamp dateTime, int totalSeats) {
         if (EventService.createEvent(eventName, location, dateTime, totalSeats)) {
             JOptionPane.showMessageDialog(this, "Event created successfully!");
+            loadCreatedEvents();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to create event.");
         }

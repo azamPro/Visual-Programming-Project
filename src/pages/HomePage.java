@@ -46,6 +46,8 @@ public class HomePage extends JFrame implements ActionListener {
     // private String[] c2 = { "Category" };
     // private String[] c3 = { "Location" };
 
+    HomeContentPanel content;
+
     int simpleEventY = 285; // where to place next event label
 
     // get all user data from seission and assign them to the variables
@@ -102,7 +104,7 @@ public class HomePage extends JFrame implements ActionListener {
         mainPanel = new JPanel(new BorderLayout());
 
         // === Main content panel (Home) ===
-        HomeContentPanel content = new HomeContentPanel(DATES, CATEGORIES, LOCATIONS);
+        /* HomeContentPanel */ content = new HomeContentPanel(DATES, CATEGORIES, LOCATIONS);
 
         contentPanel = content;
         Search_Field = content.searchField;
@@ -226,8 +228,24 @@ public class HomePage extends JFrame implements ActionListener {
         mainPanel.removeAll();
         if (e.getSource() == Home_Button) { // === RETURNS TO HOME PANEL ===
             mainPanel.add(contentPanel, BorderLayout.CENTER);
+            //
+
+            content.eventsPanel.removeAll();
+            for (models.Event ev : EventService.getAllEvents()) {
+                content.addEventCard(ev.getEventId(), ev.getName(), ev.getLocation(), ev.getDate());
+            }
+            content.eventsPanel.revalidate();
+            content.eventsPanel.repaint();
+
+            mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+            //
+
         } else if (e.getSource() == Tickets_Button) { // ==== GOES TO TICKETS PANEL ===
+            TicketsPanel newTicketsPanel = new TicketsPanel(); // create fresh instance (refresh)
+            Tickets_Panel = newTicketsPanel;
             mainPanel.add(Tickets_Panel, BorderLayout.CENTER);
+            // mainPanel.add(Tickets_Panel, BorderLayout.CENTER);
         } else if (e.getSource() == Event_Management_Button) { // === GOES TO EVENT MANAGEMENT PANEL ===
             mainPanel.add(Event_Management_Panel, BorderLayout.CENTER);
         } else if (e.getSource() == Profile_Button) { // === GOES TO PROFILE PANEL ===
@@ -239,6 +257,7 @@ public class HomePage extends JFrame implements ActionListener {
             mainPanel.add(Notification_Panel, BorderLayout.CENTER);
         } else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
                                                            // TO CREATE EVENT ===
+
             /*
              * JTextField Name_Field = new JTextField();
              * JTextField Date_Field = new JTextField();
@@ -270,6 +289,7 @@ public class HomePage extends JFrame implements ActionListener {
              * }
              */
         }
+
         mainPanel.revalidate();
         mainPanel.repaint();
 
