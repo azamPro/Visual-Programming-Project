@@ -109,6 +109,9 @@ public class Register extends JFrame implements ActionListener {
                         if (User_Name.isEmpty()) throw new AuthException("Enter User Name");
                         if (password.isEmpty()) throw new AuthException("Enter Password");
                         if (Email.isEmpty()) throw new AuthException("Enter Email");
+                        if (!Email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                                throw new AuthException("Enter a valid email address");
+                            }
                 
                         // ✅ INSERT into DB using DBConnection
                         Connection conn = DBConnection.getConnection();
