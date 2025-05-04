@@ -113,7 +113,6 @@ public class AdminLogin extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-    
             if (!found) {
                 JOptionPane.showMessageDialog(this, "Admin User Name or Password is incorrect", "Error", JOptionPane.ERROR_MESSAGE);
             } else {

@@ -21,13 +21,7 @@ public class TicketsPanel extends JPanel {
         ticketsLabel.setBounds(0, 0, 800, 80);
         ticketsLabel.setOpaque(false); // No background
         ticketsLabel.setForeground(Color.GRAY); // Match the home page text color
-
         add(ticketsLabel);
-
-        // registeredLabel = new JLabel("Events (registered in):");
-        // registeredLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        // registeredLabel.setBounds(20, 150, 300, 25);
-        // add(registeredLabel);
 
         registeredBox = new JPanel();
         registeredBox.setLayout(new BoxLayout(registeredBox, BoxLayout.Y_AXIS));
@@ -39,9 +33,7 @@ public class TicketsPanel extends JPanel {
         registeredScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
         add(registeredScrollPane);
-
         loadRegisteredEvents();
-
     }
 
     public void loadRegisteredEvents() {

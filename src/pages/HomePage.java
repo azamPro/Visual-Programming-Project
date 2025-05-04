@@ -42,9 +42,6 @@ public class HomePage extends JFrame implements ActionListener {
     private JLabel Password_Label, User_Name_Label, Email_Label, Title_Label, Tickets_Label, Event_Management_Label,
             Reg_Events_Label, Your_Events_Label, Profile_Label, Notification_Label;
     private JTextField Search_Field;
-    // private String[] c1 = { "date" };
-    // private String[] c2 = { "Category" };
-    // private String[] c3 = { "Location" };
 
     HomeContentPanel content;
 
@@ -258,37 +255,6 @@ public class HomePage extends JFrame implements ActionListener {
 
          else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
                                                            // TO CREATE EVENT ===
-
-            /*
-             * JTextField Name_Field = new JTextField();
-             * JTextField Date_Field = new JTextField();
-             * JTextField Location_Field = new JTextField();
-             * 
-             * JPanel panel = new JPanel(new GridLayout(0, 1)); // POP UP PANEL DESIGN
-             * panel.add(new JLabel("Event Name:"));
-             * panel.add(Name_Field);
-             * panel.add(new JLabel("Date:"));
-             * panel.add(Date_Field);
-             * panel.add(new JLabel("Location:"));
-             * panel.add(Location_Field);
-             * 
-             * int result = JOptionPane.showConfirmDialog(this, panel, "Create New Event",
-             * JOptionPane.OK_CANCEL_OPTION);
-             * if (result == JOptionPane.OK_OPTION) { // IF USER PRESS OK
-             * String name = Name_Field.getText().trim();
-             * String date = Date_Field.getText().trim();
-             * String location = Location_Field.getText().trim();
-             * 
-             * if (!name.isEmpty() && !date.isEmpty() && !location.isEmpty()) { // CHECKS IF
-             * NAME, DATE, LOCATION IS
-             * // EMPTY OR NOT
-             * Events nEvent = new Events(name, location, date);
-             * EventsDataBase.Available_Events[EventsDataBase.ne++] = nEvent;
-             * addEventToUI(nEvent);
-             * 
-             * }
-             * }
-             */
         }
 
         mainPanel.revalidate();
@@ -328,13 +294,6 @@ public class HomePage extends JFrame implements ActionListener {
             }
         });
 
-        /*
-         * Event_Management_Panel.add(newEventButton); //deleting this fixed the events
-         * showing in the back of the scrollpane
-         * Event_Management_Panel.repaint();
-         * simpleEventY += 50;
-         */
-
         // Refresh events on home
         eventsPanel.removeAll();
         for (int i = 0; i < EventsDataBase.ne; i++) {
@@ -369,7 +328,7 @@ public class HomePage extends JFrame implements ActionListener {
 
                 Events event = new Events(name, location, date);
                 // Events event = new Event(name, location, date, category, totalSeats);
-                addEventToUI(event); // reuse your helper
+                addEventToUI(event);
             }
 
             rs.close();

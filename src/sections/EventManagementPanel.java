@@ -45,20 +45,6 @@ public class EventManagementPanel extends JPanel {
             createEventButton.setVisible(false);
         }
 
-        /*
-         * registeredBox = new JPanel();
-         * registeredBox.setLayout(new BoxLayout(registeredBox, BoxLayout.Y_AXIS));
-         * registeredBox.setBackground(Color.WHITE);
-         * 
-         * JScrollPane registeredScrollPane = new JScrollPane(registeredBox);
-         * registeredScrollPane.setBounds(20, 180, 740, 380); // Bigger height
-         * registeredScrollPane.setBorder(BorderFactory.
-         * createTitledBorder("your events:"));
-         * registeredScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-         * 
-         * add(registeredScrollPane);
-         */
-
         eventListPanel = new JPanel();
         eventListPanel.setLayout(new BoxLayout(eventListPanel, BoxLayout.Y_AXIS));
         eventListPanel.setBackground(Color.WHITE);
@@ -87,7 +73,7 @@ public class EventManagementPanel extends JPanel {
     private void openEditEventDialog(EventService.CreatedEvent event) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
 
-       // Prefill current event data
+        // Prefill current event data
         JTextField eventNameField = new JTextField(event.getName());
         JTextField locationField = new JTextField(event.getLocation());
         JTextField totalSeatsField = new JTextField(String.valueOf(event.getTotalSeats()));
@@ -103,7 +89,7 @@ public class EventManagementPanel extends JPanel {
         } catch (Exception e) {
             dateSpinner.setValue(new java.util.Date()); // fallback
         }
-        
+
         panel.add(new JLabel("Event Name:"));
         panel.add(eventNameField);
         panel.add(new JLabel("Location:"));
@@ -113,9 +99,8 @@ public class EventManagementPanel extends JPanel {
         panel.add(new JLabel("Total Seats:"));
         panel.add(totalSeatsField);
 
-
         int result = JOptionPane.showConfirmDialog(this, panel, "Edit Event",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
             try {
@@ -123,14 +108,18 @@ public class EventManagementPanel extends JPanel {
                 String newLocation = locationField.getText().trim();
                 int newSeats = Integer.parseInt(totalSeatsField.getText().trim());
                 java.util.Date newDate = (java.util.Date) dateSpinner.getValue();
+                // last edit was here
+                if (newName.isEmpty() || newLocation.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "All fields must be filled.");
+                    return;
+                }
 
                 boolean updated = EventService.updateEvent(
-                    event.getEventId(),
-                    newName,
-                    newLocation,
-                    new java.sql.Timestamp(newDate.getTime()),
-                    newSeats
-                );
+                        event.getEventId(),
+                        newName,
+                        newLocation,
+                        new java.sql.Timestamp(newDate.getTime()),
+                        newSeats);
 
                 if (updated) {
                     JOptionPane.showMessageDialog(this, "Event updated successfully!");
@@ -144,7 +133,7 @@ public class EventManagementPanel extends JPanel {
             }
 
         }
-            }
+    }
 
     // this method opens a dialog to create an event
     private void openCreateEventDialog() {
@@ -181,47 +170,6 @@ public class EventManagementPanel extends JPanel {
         }
     }
 
-    // this method loads the events registered by the user
-    // public void loadRegisteredEvents() {
-    // registeredBox.removeAll();
-
-    // List<RegistrationService.RegisteredEvent> registeredEvents =
-    // RegistrationService.getRegisteredEvents(Session.getUserId());
-
-    // if (registeredEvents.isEmpty()) {
-    // JLabel emptyLabel = new JLabel("No events registered.");
-    // emptyLabel.setFont(new Font("Arial", Font.ITALIC, 14));
-    // emptyLabel.setForeground(Color.GRAY);
-    // registeredBox.add(emptyLabel);
-    // } else {
-    // for (RegistrationService.RegisteredEvent event : registeredEvents) {
-    // JPanel eventPanel = new JPanel(new GridLayout(0, 1));
-    // eventPanel.setBackground(Color.LIGHT_GRAY);
-    // eventPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
-    // JLabel nameLabel = new JLabel("[Event Name] " + event.getEventName());
-    // nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-
-    // JLabel locationLabel = new JLabel("[Location] " + event.getLocation());
-    // locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-
-    // JLabel dateLabel = new JLabel("[Time] " + event.getFormattedDate());
-    // dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-    // dateLabel.setForeground(Color.DARK_GRAY);
-
-    // eventPanel.add(nameLabel);
-    // eventPanel.add(locationLabel);
-    // eventPanel.add(dateLabel);
-
-    // registeredBox.add(Box.createVerticalStrut(10));
-    // registeredBox.add(eventPanel);
-    // }
-    // }
-
-    // registeredBox.revalidate();
-    // registeredBox.repaint();
-    // }
-
     // this method loads the events created by the organizer
     public void loadCreatedEvents() {
         System.out.println("Organizer ID: " + Session.getUserId());
@@ -245,7 +193,7 @@ public class EventManagementPanel extends JPanel {
                 edit_Button.addActionListener(ev -> {
                     openEditEventDialog(event);
                 });
-    
+
                 JButton delete_Button = new JButton("delete");
                 delete_Button.setPreferredSize(new Dimension(60, 45));
                 delete_Button.setFocusPainted(false);
@@ -256,8 +204,7 @@ public class EventManagementPanel extends JPanel {
                             null,
                             "Are you sure you want to delete this event?",
                             "Delete Confirmation",
-                            JOptionPane.YES_NO_OPTION
-                    );
+                            JOptionPane.YES_NO_OPTION);
                     if (confirm == JOptionPane.YES_OPTION) {
                         boolean deleted = EventService.deleteEvent(event.getEventId());
                         if (deleted) {
@@ -268,7 +215,7 @@ public class EventManagementPanel extends JPanel {
                         }
                     }
                 });
-    
+
                 // NEW LAYOUT STARTS HERE
                 JPanel eventBox = new JPanel(new BorderLayout());
                 eventBox.setBackground(Color.LIGHT_GRAY);
@@ -276,42 +223,42 @@ public class EventManagementPanel extends JPanel {
                 eventBox.setPreferredSize(new Dimension(720, 80));
                 eventBox.setMaximumSize(new Dimension(720, 80));
                 eventBox.setMinimumSize(new Dimension(720, 80));
-    
+
                 // LEFT SIDE: TEXT
                 JPanel textPanel = new JPanel();
                 textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
                 textPanel.setBackground(Color.LIGHT_GRAY);
-    
+
                 JLabel nameLabel = new JLabel("[Event Name] " + event.getName());
                 nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-    
+
                 JLabel locationLabel = new JLabel("[Location] " + event.getLocation());
                 locationLabel.setFont(new Font("Arial", Font.PLAIN, 13));
-    
+
                 JLabel dateLabel = new JLabel("[Date] " + event.getDate());
                 dateLabel.setFont(new Font("Arial", Font.ITALIC, 12));
                 dateLabel.setForeground(Color.DARK_GRAY);
-    
+
                 textPanel.add(nameLabel);
                 textPanel.add(locationLabel);
                 textPanel.add(dateLabel);
-    
+
                 // RIGHT SIDE: BUTTONS
                 JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
                 buttonPanel.setBackground(Color.LIGHT_GRAY);
                 buttonPanel.setPreferredSize(new Dimension(100, 60));
                 buttonPanel.setMaximumSize(new Dimension(100, 60));
-    
+
                 edit_Button.setPreferredSize(new Dimension(90, 25));
                 delete_Button.setPreferredSize(new Dimension(90, 25));
-    
+
                 buttonPanel.add(edit_Button);
                 buttonPanel.add(delete_Button);
-    
+
                 eventBox.add(textPanel, BorderLayout.CENTER);
                 eventBox.add(buttonPanel, BorderLayout.EAST);
                 // NEW LAYOUT ENDS HERE
-    
+
                 eventListPanel.add(Box.createVerticalStrut(10));
                 eventListPanel.add(eventBox);
             }
@@ -321,5 +268,4 @@ public class EventManagementPanel extends JPanel {
         eventListPanel.repaint();
     }
 
-    
 }

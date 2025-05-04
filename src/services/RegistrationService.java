@@ -36,16 +36,15 @@ public class RegistrationService {
         String sql = "SELECT e.event_name, e.location, e.date FROM events e JOIN registrations r ON e.event_id = r.event_id WHERE r.attendee_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 list.add(new RegisteredEvent(
-                    rs.getString("event_name"),
-                    rs.getString("location"),
-                    rs.getString("date")
-                ));
+                        rs.getString("event_name"),
+                        rs.getString("location"),
+                        rs.getString("date")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

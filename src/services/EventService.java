@@ -9,37 +9,31 @@ import javax.swing.JOptionPane;
 import models.Event;
 import db.DBConnection;
 
-// iport time 
-// import java.text.SimpleDateFormat;
-// import java.util.Date;
-
 import exceptions.MessageBox;
 import auth.Session;
-
 
 public class EventService {
     public static ArrayList<Event> getAllEvents() {
         ArrayList<Event> events = new ArrayList<>();
-        // String sql = "SELECT e.event_name, e.event_id, e.location, e.date, c.category_name " +
+        // String sql = "SELECT e.event_name, e.event_id, e.location, e.date,
+        // c.category_name " +
         // "FROM events e JOIN categories c ON e.category_id = c.category_id";
         String sql = "SELECT e.event_name, e.event_id, e.location, e.date, c.category_name, e.total_seats " +
-             "FROM events e JOIN categories c ON e.category_id = c.category_id";
+                "FROM events e JOIN categories c ON e.category_id = c.category_id";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
-                while (rs.next()) {
-                    Event e = new Event(
+            while (rs.next()) {
+                Event e = new Event(
                         rs.getInt("event_id"),
                         rs.getString("event_name"),
                         rs.getString("location"),
                         rs.getString("date"),
                         rs.getString("category_name"),
-                        rs.getInt("total_seats")
-                    );
-                    events.add(e);
-                }
-                
+                        rs.getInt("total_seats"));
+                events.add(e);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,11 +46,11 @@ public class EventService {
         PreparedStatement checkStmt = null;
         PreparedStatement regStmt = null;
         PreparedStatement notifStmt = null;
-    
+
         try {
             conn = DBConnection.getConnection();
             Timestamp now = new Timestamp(System.currentTimeMillis());
-    
+
             // 1. Check if the user is already registered
             String checkSql = "SELECT COUNT(*) FROM registrations WHERE attendee_id = ? AND event_id = ?";
             checkStmt = conn.prepareStatement(checkSql);
@@ -67,7 +61,7 @@ public class EventService {
                 JOptionPane.showMessageDialog(null, "You are already registered for this event.");
                 return; // 🚫 Stop the registration
             }
-    
+
             // 2. Insert into registrations
             String regSql = "INSERT INTO registrations (event_id, attendee_id, registration_time, status, created_at) VALUES (?, ?, ?, ?, ?)";
             regStmt = conn.prepareStatement(regSql);
@@ -77,7 +71,7 @@ public class EventService {
             regStmt.setString(4, "pending");
             regStmt.setTimestamp(5, now);
             regStmt.executeUpdate();
-    
+
             // 3. Insert into notifications (✅ including event_id)
             String notifSql = "INSERT INTO notifications (user_id, event_id, message, sent_time, created_at, notification_type) VALUES (?, ?, ?, ?, ?, ?)";
             notifStmt = conn.prepareStatement(notifSql);
@@ -89,33 +83,32 @@ public class EventService {
             notifStmt.setString(6, "register");
             notifStmt.executeUpdate();
 
-    
-            
             MessageBox.showSuccess(eventName + " You are attending " + "  we are waiting for you.");
 
-    
         } catch (SQLException ex) {
             ex.printStackTrace();
             MessageBox.showError("Error saving registration: " + ex.getMessage());
 
         } finally {
             try {
-                if (checkStmt != null) checkStmt.close();
-                if (regStmt != null) regStmt.close();
-                if (notifStmt != null) notifStmt.close();
-                if (conn != null) conn.close();
+                if (checkStmt != null)
+                    checkStmt.close();
+                if (regStmt != null)
+                    regStmt.close();
+                if (notifStmt != null)
+                    notifStmt.close();
+                if (conn != null)
+                    conn.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    
-    
     public static boolean createEvent(String name, String location, Timestamp dateTime, int totalSeats) {
         String sql = "INSERT INTO events (event_name, location, date, description, total_seats, availablity, organizer_id, category_id, created_at, updated_at) VALUES (?, ?, ?, '', ?, true, ?, 1, NOW(), NOW())";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
             stmt.setString(2, location);
             stmt.setTimestamp(3, dateTime);
@@ -128,14 +121,14 @@ public class EventService {
             return false;
         }
     }
-    
+
     public static class CreatedEvent {
         private int eventId;
         private String name;
         private String location;
         private String date;
         private int totalSeats;
-        
+
         public CreatedEvent(int eventId, String name, String location, String date, int totalSeats) {
             this.eventId = eventId;
             this.name = name;
@@ -143,6 +136,7 @@ public class EventService {
             this.date = date;
             this.totalSeats = totalSeats;
         }
+
         public CreatedEvent(int eventId, String name, String location, String date) {
             this.eventId = eventId;
             this.name = name;
@@ -150,11 +144,25 @@ public class EventService {
             this.date = date;
         }
 
-        public int getEventId() { return eventId; }
-        public String getName() { return name; }
-        public String getLocation() { return location; }
-        public String getDate() { return date; }
-        public int getTotalSeats() { return totalSeats; }
+        public int getEventId() {
+            return eventId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public int getTotalSeats() {
+            return totalSeats;
+        }
     }
 
     public static List<CreatedEvent> getCreatedEvents(int organizerId) {
@@ -162,17 +170,16 @@ public class EventService {
         String sql = "SELECT event_id, event_name, location, date ,total_seats FROM events WHERE organizer_id = ?";
 
         try (Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, organizerId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 list.add(new CreatedEvent(
-                    rs.getInt("event_id"),
-                    rs.getString("event_name"),
-                    rs.getString("location"),
-                    rs.getString("date"),
-                    rs.getInt("total_seats")
-                ));
+                        rs.getInt("event_id"),
+                        rs.getString("event_name"),
+                        rs.getString("location"),
+                        rs.getString("date"),
+                        rs.getInt("total_seats")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,8 +196,8 @@ public class EventService {
             conn.setAutoCommit(false);
 
             try (PreparedStatement stmt1 = conn.prepareStatement(deleteRegistrations);
-                PreparedStatement stmt2 = conn.prepareStatement(deleteNotifications);
-                PreparedStatement stmt3 = conn.prepareStatement(deleteEvent)) {
+                    PreparedStatement stmt2 = conn.prepareStatement(deleteNotifications);
+                    PreparedStatement stmt3 = conn.prepareStatement(deleteEvent)) {
 
                 stmt1.setInt(1, eventId);
                 stmt1.executeUpdate();
@@ -217,7 +224,7 @@ public class EventService {
     public static boolean updateEvent(int eventId, String name, String location, Timestamp dateTime, int totalSeats) {
         String sql = "UPDATE events SET event_name = ?, location = ?, date = ?, total_seats = ?, updated_at = NOW() WHERE event_id = ?";
         try (Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
             stmt.setString(2, location);
             stmt.setTimestamp(3, dateTime);
@@ -231,44 +238,4 @@ public class EventService {
             return false;
         }
     }
-
-    // public static boolean deleteEventById(int eventId) {
-    //     String deleteRegistrations = "DELETE FROM registrations WHERE event_id = ?";
-    //     String deleteNotifications = "DELETE FROM notifications WHERE event_id = ?";
-    //     String deleteEvent = "DELETE FROM events WHERE event_id = ?";
-    
-    //     try (Connection conn = DBConnection.getConnection()) {
-    //         conn.setAutoCommit(false);
-    
-    //         try (PreparedStatement stmt1 = conn.prepareStatement(deleteRegistrations);
-    //              PreparedStatement stmt2 = conn.prepareStatement(deleteNotifications);
-    //              PreparedStatement stmt3 = conn.prepareStatement(deleteEvent)) {
-    
-    //             stmt1.setInt(1, eventId);
-    //             stmt1.executeUpdate();
-    
-    //             stmt2.setInt(1, eventId);
-    //             stmt2.executeUpdate();
-    
-    //             stmt3.setInt(1, eventId);
-    //             int rows = stmt3.executeUpdate();
-    
-    //             conn.commit();
-    //             return rows > 0;
-    //         } catch (SQLException e) {
-    //             conn.rollback();
-    //             e.printStackTrace();
-    //             return false;
-    //         }
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //         return false;
-    //     }
-    // }
-    
-
-
-
-
-
 }
