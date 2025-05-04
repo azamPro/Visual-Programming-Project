@@ -41,7 +41,7 @@ public class EventService {
         return events;
     }
 
-    public static void registerUserForEvent(int userId, int eventId, String eventName) {
+    public static void registerUserForEvent(int userId, int eventId, String userName) {
         Connection conn = null;
         PreparedStatement checkStmt = null;
         PreparedStatement regStmt = null;
@@ -72,19 +72,36 @@ public class EventService {
             regStmt.setTimestamp(5, now);
             regStmt.executeUpdate();
 
-            // 3. Insert into notifications (✅ including event_id)
+            // 3. Insert into notifications
+            String eventName = "";
+            String eventQuery = "SELECT event_name FROM events WHERE event_id = ?";
+            try (PreparedStatement eventStmt = conn.prepareStatement(eventQuery)) {
+                eventStmt.setInt(1, eventId);
+                ResultSet eventRs = eventStmt.executeQuery();
+                if (eventRs.next()) {
+                    eventName = eventRs.getString("event_name");
+                }
+            }
+
             String notifSql = "INSERT INTO notifications (user_id, event_id, message, sent_time, created_at, notification_type) VALUES (?, ?, ?, ?, ?, ?)";
+            String message = "Hello  \"" + userName + "\" You have successfully registered for \"" + eventName + "\". We're excited to see you there!";
             notifStmt = conn.prepareStatement(notifSql);
             notifStmt.setInt(1, userId);
             notifStmt.setInt(2, eventId);
-            notifStmt.setString(3, eventName + " You are attending " + "  we are waiting for you.");
+            // notifStmt.setString(3, eventName + " You are attending " + "  we are waiting for you.");
+            notifStmt.setString(3, message);
             notifStmt.setTimestamp(4, now);
             notifStmt.setTimestamp(5, now);
             notifStmt.setString(6, "register");
             notifStmt.executeUpdate();
 
-            MessageBox.showSuccess(eventName + " You are attending " + "  we are waiting for you.");
+    
+            
+            // MessageBox.showSuccess(eventName + " You are attending " + "  we are waiting for you.");
+            MessageBox.showSuccess(message);
 
+
+    
         } catch (SQLException ex) {
             ex.printStackTrace();
             MessageBox.showError("Error saving registration: " + ex.getMessage());
