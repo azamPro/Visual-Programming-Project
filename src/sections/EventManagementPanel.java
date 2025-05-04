@@ -165,7 +165,7 @@ public class EventManagementPanel extends JPanel {
             Date date = (Date) dateSpinner.getValue();
 
             if (eventName.isEmpty() || location.isEmpty() || totalSeatsField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Event name and location cannot be empty.");
+                JOptionPane.showMessageDialog(this, "Fill in all fields.");
                 return;
             }
             int totalSeats = Integer.parseInt(totalSeatsField.getText());
