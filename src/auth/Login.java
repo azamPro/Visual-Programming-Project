@@ -3,19 +3,18 @@ package auth;
 import javax.swing.*;
 
 import exceptions.AuthException;
-import exceptions.MessageBox;
+// import exceptions.MessageBox;
 import pages.HomePage;
 
 import java.awt.*;
 import java.awt.event.*;
-// import auth.test;
 
 import db.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import pages.HomePage;
+// import pages.HomePage;
 
 
 
@@ -31,7 +30,7 @@ public class Login extends JFrame implements ActionListener {
         setTitle("Login");
         setSize(450, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center on screen
+        setLocationRelativeTo(null); 
 
         // Components Definition
         User_Name_Field = new JTextField();

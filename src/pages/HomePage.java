@@ -3,18 +3,20 @@ package pages;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import models.Event;
+// import models.Event;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
+// import java.text.SimpleDateFormat;
+// import java.util.Date;
+// import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 import auth.Events;
 import auth.EventsDataBase;
-import db.DBConnection;
+// import db.DBConnection;
 // import sectiomns
 import sections.SideMenuPanel;
 import sections.HomeContentPanel;
@@ -22,14 +24,15 @@ import sections.ProfilePanel;
 import sections.TicketsPanel;
 import services.EventService;
 import sections.EventManagementPanel;
-import sections.ProfilePanel;
+// import sections.ProfilePanel;
 import sections.NotificationPanel;
 
 // import session
 import auth.Session;
-
+import db.DBConnection;
 // services
 import services.EventService;
+
 
 public class HomePage extends JFrame implements ActionListener {
     // Menu and main components
@@ -48,15 +51,35 @@ public class HomePage extends JFrame implements ActionListener {
     int simpleEventY = 285; // where to place next event label
 
     // get all user data from seission and assign them to the variables
-    private int userId = Session.getUserId();
+    // private int userId = Session.getUserId();
     private String username = Session.getUsername();
     private String email = Session.getEmail();
-    private String password = Session.getPassword();
-    private String role = Session.getRole();
+    // private String password = Session.getPassword();
+    // private String role = Session.getRole();
 
-    private static final String[] DATES = { "date" };
-    private static final String[] CATEGORIES = { "Category" };
-    private static final String[] LOCATIONS = { "Location" };
+    // private static final String[] DATES = { "date" };
+    // private static String[] getCategoriesFromDB() {
+    //     List<String> categories = new ArrayList<>();
+    //     categories.add("All"); // Default option
+
+    //     try (Connection conn = DBConnection.getConnection();
+    //         PreparedStatement stmt = conn.prepareStatement("SELECT category_name FROM categories");
+    //         ResultSet rs = stmt.executeQuery()) {
+
+    //         while (rs.next()) {
+    //             categories.add(rs.getString("category_name"));
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+
+    //     return categories.toArray(new String[0]);
+    // }
+    // private static final String[] LOCATIONS = { "Location" };
+    private static final String[] DATES = EventService.getAllDates();
+    private static final String[] CATEGORIES = EventService.getAllCategories();
+    private static final String[] LOCATIONS = EventService.getAllLocations();
+    
 
     public HomePage() {
 
@@ -101,12 +124,17 @@ public class HomePage extends JFrame implements ActionListener {
         mainPanel = new JPanel(new BorderLayout());
 
         // === Main content panel (Home) ===
-        /* HomeContentPanel */ content = new HomeContentPanel(DATES, CATEGORIES, LOCATIONS);
+        content = new HomeContentPanel(DATES, CATEGORIES, LOCATIONS);
 
         contentPanel = content;
         Search_Field = content.searchField;
         // Text_Search_Button = content.textSearchButton;
-        Combo_Search_Button = content.comboSearchButton;
+        // Combo_Search_Button = content.comboSearchButton;
+        Combo_Search_Button.addActionListener(e -> applyCategoryFilter());
+        content.categoryBox.addActionListener(e -> applyCategoryFilter());
+        content.dateBox.addActionListener(e -> applyCategoryFilter());
+        content.locationBox.addActionListener(e -> applyCategoryFilter());
+
         Date = content.dateBox;
         Category = content.categoryBox;
         Location = content.locationBox;
@@ -254,7 +282,7 @@ public class HomePage extends JFrame implements ActionListener {
         }
 
          else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
-                                                           // TO CREATE EVENT ===
+        // TO CREATE EVENT ===
         }
 
         mainPanel.revalidate();
@@ -340,5 +368,27 @@ public class HomePage extends JFrame implements ActionListener {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private void applyCategoryFilter() {
+        String selectedDate = (String) Date.getSelectedItem();
+        String selectedCategory = (String) Category.getSelectedItem();
+        String selectedLocation = (String) Location.getSelectedItem();
+    
+        content.eventsPanel.removeAll();
+    
+        for (models.Event ev : EventService.getAllEvents()) {
+            boolean matchDate = selectedDate.equals("All") || ev.getDate().startsWith(selectedDate);
+            boolean matchCategory = selectedCategory.equals("All") || ev.getCategory().equals(selectedCategory);
+            boolean matchLocation = selectedLocation.equals("All") || ev.getLocation().equals(selectedLocation);
+    
+            if (matchDate && matchCategory && matchLocation) {
+                content.addEventCard(ev.getEventId(), ev.getName(), ev.getLocation(), ev.getDate());
+            }
+        }
+    
+        content.eventsPanel.revalidate();
+        content.eventsPanel.repaint();    
+    }
+    
 
 }

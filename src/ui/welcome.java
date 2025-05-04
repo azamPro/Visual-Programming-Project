@@ -1,5 +1,5 @@
-package ui;
+// package ui;
 
-public class welcome {
+// public class welcome {
 
-}
+// }

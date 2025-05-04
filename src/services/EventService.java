@@ -255,4 +255,52 @@ public class EventService {
             return false;
         }
     }
+    public static String[] getAllCategories() {
+        List<String> categories = new ArrayList<>();
+        categories.add("All");
+        String sql = "SELECT category_name FROM categories";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                categories.add(rs.getString("category_name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categories.toArray(new String[0]);
+    }
+    
+    public static String[] getAllLocations() {
+        List<String> locations = new ArrayList<>();
+        locations.add("All");
+        String sql = "SELECT DISTINCT location FROM events";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                locations.add(rs.getString("location"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return locations.toArray(new String[0]);
+    }
+    
+    public static String[] getAllDates() {
+        List<String> dates = new ArrayList<>();
+        dates.add("All");
+        String sql = "SELECT DISTINCT DATE(date) as event_date FROM events ORDER BY event_date";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                dates.add(rs.getString("event_date"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dates.toArray(new String[0]);
+    }
+    
 }

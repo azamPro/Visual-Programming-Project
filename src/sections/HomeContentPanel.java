@@ -71,13 +71,13 @@ public class HomeContentPanel extends JPanel {
         add(locationBox);
 
         // Filter button
-        comboSearchButton = new JButton("Filter");
-        comboSearchButton.setBounds(650, 110, 80, 30);
-        comboSearchButton.setBackground(Color.GRAY);
-        comboSearchButton.setForeground(Color.WHITE);
-        comboSearchButton.setFocusPainted(false);
-        comboSearchButton.setBorderPainted(false);
-        add(comboSearchButton);
+        // comboSearchButton = new JButton("Filter");
+        // comboSearchButton.setBounds(650, 110, 80, 30);
+        // comboSearchButton.setBackground(Color.GRAY);
+        // comboSearchButton.setForeground(Color.WHITE);
+        // comboSearchButton.setFocusPainted(false);
+        // comboSearchButton.setBorderPainted(false);
+        // add(comboSearchButton);
 
         // Events display panel
         eventsPanel = new JPanel();
@@ -125,7 +125,7 @@ public class HomeContentPanel extends JPanel {
 
             if (result == JOptionPane.YES_OPTION) {
                 EventService.registerUserForEvent(Session.getUserId(), eventId, Session.getUsername()); // call the
-                                                                                                        // method
+                // method
             }
         });
 
