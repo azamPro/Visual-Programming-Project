@@ -159,11 +159,16 @@ public class EventManagementPanel extends JPanel {
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
-            int totalSeats = Integer.parseInt(totalSeatsField.getText());
 
             String eventName = eventNameField.getText();
             String location = locationField.getText();
             Date date = (Date) dateSpinner.getValue();
+
+            if (eventName.isEmpty() || location.isEmpty() || totalSeatsField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Event name and location cannot be empty.");
+                return;
+            }
+            int totalSeats = Integer.parseInt(totalSeatsField.getText());
 
             // Save to database
             createEvent(eventName, location, new java.sql.Timestamp(date.getTime()), totalSeats);
@@ -224,7 +229,7 @@ public class EventManagementPanel extends JPanel {
                 eventBox.setMaximumSize(new Dimension(720, 80));
                 eventBox.setMinimumSize(new Dimension(720, 80));
 
-                // LEFT SIDE: TEXT
+                // LEFT SIDE TEXT
                 JPanel textPanel = new JPanel();
                 textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
                 textPanel.setBackground(Color.LIGHT_GRAY);
