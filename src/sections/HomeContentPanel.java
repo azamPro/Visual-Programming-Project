@@ -1,10 +1,8 @@
 package sections;
 
 import javax.swing.*;
-
 import services.EventService;
 import models.Event;
-
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,15 +44,6 @@ public class HomeContentPanel extends JPanel {
         searchField.setBackground(Color.WHITE);
         searchField.setForeground(Color.DARK_GRAY);
         add(searchField);
-
-        // Search button
-        // textSearchButton = new JButton("Search");
-        // textSearchButton.setBounds(220, 110, 80, 30);
-        // textSearchButton.setBackground(Color.GRAY);
-        // textSearchButton.setForeground(Color.WHITE);
-        // textSearchButton.setFocusPainted(false);
-        // textSearchButton.setBorderPainted(false);
-        // add(textSearchButton);
 
         // Dropdowns
         dateBox = new JComboBox<>(dates);
@@ -144,21 +133,6 @@ public class HomeContentPanel extends JPanel {
         eventsPanel.revalidate();
         eventsPanel.repaint();
     }
-
-    // private String formatDate(String rawDate) {
-    //     if (rawDate == null || rawDate.trim().isEmpty())
-    //         return "Unknown";
-
-    //     try {
-    //         SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    //         SimpleDateFormat output = new SimpleDateFormat("MMM dd, yyyy - hh:mm a");
-    //         Date date = input.parse(rawDate);
-    //         return output.format(date);
-    //     } catch (ParseException e) {
-    //         return rawDate;
-    //     }
-    // }
 
     public void searchEvents(String keyword) {
         eventsPanel.removeAll();
