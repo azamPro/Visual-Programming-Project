@@ -2,13 +2,11 @@ package sections;
 
 import javax.swing.*;
 import java.awt.*;
-// import java.awt.event.ActionListener;
 import java.util.Date;
 import auth.Session;
 
 import services.EventService;
 import java.sql.Timestamp;
-// import services.RegistrationService;
 
 import java.util.List;
 // import models.Event;
@@ -123,7 +121,7 @@ public class EventManagementPanel extends JPanel {
 
                 if (updated) {
                     JOptionPane.showMessageDialog(this, "Event updated successfully!");
-                    loadCreatedEvents(); // ✅ refresh the UI
+                    loadCreatedEvents();
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to update event.");
                 }
