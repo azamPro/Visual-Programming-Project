@@ -16,9 +16,8 @@ public class EventsPanel extends JPanel {
 
     public EventsPanel() {
         // Set a preferred size so the panel is big enough for all columns
-        setPreferredSize(new Dimension(1200, 700)); 
+        setPreferredSize(new Dimension(1200, 700));
         setLayout(new BorderLayout());
-        
 
         // Title label at the top
         JLabel titleLabel = new JLabel("Events Management", SwingConstants.CENTER);
@@ -27,22 +26,14 @@ public class EventsPanel extends JPanel {
         titleLabel.setBackground(Color.GRAY);
         add(titleLabel, BorderLayout.NORTH);
 
-        // Create table model with column names
-        // String[] columnNames = {"Name", "Date", "Location", "Description", "Total Seats", "Availability"};
-        // tableModel = new DefaultTableModel(columnNames, 0) {
-        //     @Override
-        //     public boolean isCellEditable(int row, int column) {
-        //         return false; // Make cells non-editable
-        //     }
-        // };
-        String[] columnNames = {"ID", "Name", "Date", "Location", "Description", "Total Seats", "Availability", "Action"};
+        String[] columnNames = { "ID", "Name", "Date", "Location", "Description", "Total Seats", "Availability",
+                "Action" };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 7; // only "Action" column editable (button)
             }
         };
-        
 
         // Create the table and apply the model
         eventsTable = new JTable(tableModel);
@@ -50,7 +41,8 @@ public class EventsPanel extends JPanel {
         eventsTable.setFont(new Font("Arial", Font.PLAIN, 14));
         eventsTable.setFillsViewportHeight(true);
 
-        // Automatically resize columns to fit the available width (no horizontal scroll)
+        // Automatically resize columns to fit the available width (no horizontal
+        // scroll)
         eventsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Customize table header
@@ -76,42 +68,43 @@ public class EventsPanel extends JPanel {
         eventsTable.removeColumn(eventsTable.getColumnModel().getColumn(0)); // hides event_id
 
         eventsTable.getColumn("Action").setCellRenderer(new ButtonRenderer());
-eventsTable.getColumn("Action").setCellEditor(new DefaultCellEditor(new JCheckBox()) {
-    JButton button = new JButton("Delete");
-    int selectedRow;
+        eventsTable.getColumn("Action").setCellEditor(new DefaultCellEditor(new JCheckBox()) {
+            JButton button = new JButton("Delete");
+            int selectedRow;
 
-    {
-        button.setForeground(Color.RED);
-        button.setFocusPainted(false);
-        button.addActionListener(e -> {
-            int modelRow = eventsTable.convertRowIndexToModel(selectedRow);
-            int eventId = (int) tableModel.getValueAt(modelRow, 0); // hidden ID
-            String eventTitle = (String) tableModel.getValueAt(modelRow, 1); // column 1 is Name
-            
-            int confirm = JOptionPane.showConfirmDialog(null,
-                    "Are you sure you want to delete the event \"" + eventTitle + "\"?",
-                    "Confirm Deletion", JOptionPane.YES_NO_OPTION);
-                        if (confirm == JOptionPane.YES_OPTION) {
-                boolean deleted = AdminService.deleteEventById(eventId);
-                if (deleted) {
-                    tableModel.removeRow(modelRow);
-                    JOptionPane.showMessageDialog(null, "Event deleted.");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Failed to delete event.");
-                }
+            {
+                button.setForeground(Color.RED);
+                button.setFocusPainted(false);
+                button.addActionListener(e -> {
+                    int modelRow = eventsTable.convertRowIndexToModel(selectedRow);
+                    int eventId = (int) tableModel.getValueAt(modelRow, 0); // hidden ID
+                    String eventTitle = (String) tableModel.getValueAt(modelRow, 1); // column 1 is Name
+
+                    int confirm = JOptionPane.showConfirmDialog(null,
+                            "Are you sure you want to delete the event \"" + eventTitle + "\"?",
+                            "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        boolean deleted = AdminService.deleteEventById(eventId);
+                        if (deleted) {
+                            tableModel.removeRow(modelRow);
+                            JOptionPane.showMessageDialog(null, "Event deleted.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Failed to delete event.");
+                        }
+                    }
+                });
+            }
+
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+                    int column) {
+                selectedRow = row;
+                return button;
+            }
+
+            public Object getCellEditorValue() {
+                return "Delete";
             }
         });
-    }
-
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        selectedRow = row;
-        return button;
-    }
-
-    public Object getCellEditorValue() {
-        return "Delete";
-    }
-});
 
         // Populate the table with data from the database
         loadEventsData();
@@ -124,7 +117,8 @@ eventsTable.getColumn("Action").setCellEditor(new DefaultCellEditor(new JCheckBo
 
     private void loadEventsData() {
         try (Connection conn = DBConnection.getConnection()) {
-            // String sql = "SELECT event_name, date, location, description, total_seats, availablity FROM events";
+            // String sql = "SELECT event_name, date, location, description, total_seats,
+            // availablity FROM events";
             String sql = "SELECT event_id, event_name, date, location, description, total_seats, availablity FROM events";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
@@ -141,21 +135,22 @@ eventsTable.getColumn("Action").setCellEditor(new DefaultCellEditor(new JCheckBo
                 int totalSeats = rs.getInt("total_seats");
                 boolean available = rs.getBoolean("availablity");
                 String availableStr = available ? "Yes" : "No";
-            
+
                 tableModel.addRow(new Object[] {
-                    id, name, dateStr, location, description, totalSeats, availableStr, "Delete"
+                        id, name, dateStr, location, description, totalSeats, availableStr, "Delete"
                 });
             }
-            
-            // eventsTable.removeColumn(eventsTable.getColumnModel().getColumn(0)); // hides event_id
+
+            // eventsTable.removeColumn(eventsTable.getColumnModel().getColumn(0)); // hides
+            // event_id
 
             rs.close();
             stmt.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                "Error loading events from database:\n" + ex.getMessage(),
-                "Database Error", JOptionPane.ERROR_MESSAGE);
+                    "Error loading events from database:\n" + ex.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -197,13 +192,12 @@ eventsTable.getColumn("Action").setCellEditor(new DefaultCellEditor(new JCheckBo
             setBackground(Color.WHITE);
             setFont(new Font("Arial", Font.BOLD, 12));
         }
-    
+
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                       boolean hasFocus, int row, int column) {
+                boolean hasFocus, int row, int column) {
             setText(value == null ? "Delete" : value.toString());
             return this;
         }
     }
-    
-}
 
+}

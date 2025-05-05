@@ -70,14 +70,6 @@ public class HomeContentPanel extends JPanel {
         locationBox.setFont(new Font("Arial", Font.PLAIN, 14));
         add(locationBox);
 
-        // Filter button
-        // comboSearchButton = new JButton("Filter");
-        // comboSearchButton.setBounds(650, 110, 80, 30);
-        // comboSearchButton.setBackground(Color.GRAY);
-        // comboSearchButton.setForeground(Color.WHITE);
-        // comboSearchButton.setFocusPainted(false);
-        // comboSearchButton.setBorderPainted(false);
-        // add(comboSearchButton);
 
         // Events display panel
         eventsPanel = new JPanel();

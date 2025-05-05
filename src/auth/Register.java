@@ -1,4 +1,5 @@
 package auth;
+
 import db.DBConnection;
 import java.sql.*;
 
@@ -99,43 +100,47 @@ public class Register extends JFrame implements ActionListener {
 
                 // this code is using real database
                 if (e.getSource() == Register_Button) {
-                String User_Name, Email;
-                try {
-                        Email = Email_Field.getText();
-                        User_Name = User_Name_Field.getText();
-                        char[] pwd = Password_Field.getPassword();
-                        String password = new String(pwd);
-                
-                        if (User_Name.isEmpty()) throw new AuthException("Enter User Name");
-                        if (password.isEmpty()) throw new AuthException("Enter Password");
-                        if (Email.isEmpty()) throw new AuthException("Enter Email");
-                        if (!Email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-                                throw new AuthException("Enter a valid email address");
-                            }
-                
-                        // ✅ INSERT into DB using DBConnection
-                        Connection conn = DBConnection.getConnection();
-                        String sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
-                        PreparedStatement stmt = conn.prepareStatement(sql);
-                        stmt.setString(1, User_Name);
-                        stmt.setString(2, Email);
-                        stmt.setString(3, password);
-                        stmt.executeUpdate();
-                        stmt.close();
-                        conn.close();
-                
-                        JOptionPane.showMessageDialog(null,
-                                "Welcome: " + User_Name,
-                                "Success", JOptionPane.INFORMATION_MESSAGE);
-                
-                        this.setVisible(false);
-                        new Login().setVisible(true);
-                
-                } catch (AuthException e1) {
-                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (SQLException e2) {
-                        JOptionPane.showMessageDialog(null, "Database Error: " + e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                        String User_Name, Email;
+                        try {
+                                Email = Email_Field.getText();
+                                User_Name = User_Name_Field.getText();
+                                char[] pwd = Password_Field.getPassword();
+                                String password = new String(pwd);
+
+                                if (User_Name.isEmpty())
+                                        throw new AuthException("Enter User Name");
+                                if (password.isEmpty())
+                                        throw new AuthException("Enter Password");
+                                if (Email.isEmpty())
+                                        throw new AuthException("Enter Email");
+                                if (!Email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                                        throw new AuthException("Enter a valid email address");
+                                }
+
+                                Connection conn = DBConnection.getConnection();
+                                String sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+                                PreparedStatement stmt = conn.prepareStatement(sql);
+                                stmt.setString(1, User_Name);
+                                stmt.setString(2, Email);
+                                stmt.setString(3, password);
+                                stmt.executeUpdate();
+                                stmt.close();
+                                conn.close();
+
+                                JOptionPane.showMessageDialog(null,
+                                                "Welcome: " + User_Name,
+                                                "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                                this.setVisible(false);
+                                new Login().setVisible(true);
+
+                        } catch (AuthException e1) {
+                                JOptionPane.showMessageDialog(null, e1.getMessage(), "Error",
+                                                JOptionPane.ERROR_MESSAGE);
+                        } catch (SQLException e2) {
+                                JOptionPane.showMessageDialog(null, "Database Error: " + e2.getMessage(), "Error",
+                                                JOptionPane.ERROR_MESSAGE);
+                        }
                 }
         }
 }

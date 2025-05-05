@@ -33,7 +33,6 @@ import db.DBConnection;
 // services
 import services.EventService;
 
-
 public class HomePage extends JFrame implements ActionListener {
     // Menu and main components
     private JButton Home_Button, Tickets_Button, Event_Management_Button, Profile_Button, Notification_Button,
@@ -59,27 +58,27 @@ public class HomePage extends JFrame implements ActionListener {
 
     // private static final String[] DATES = { "date" };
     // private static String[] getCategoriesFromDB() {
-    //     List<String> categories = new ArrayList<>();
-    //     categories.add("All"); // Default option
+    // List<String> categories = new ArrayList<>();
+    // categories.add("All"); // Default option
 
-    //     try (Connection conn = DBConnection.getConnection();
-    //         PreparedStatement stmt = conn.prepareStatement("SELECT category_name FROM categories");
-    //         ResultSet rs = stmt.executeQuery()) {
+    // try (Connection conn = DBConnection.getConnection();
+    // PreparedStatement stmt = conn.prepareStatement("SELECT category_name FROM
+    // categories");
+    // ResultSet rs = stmt.executeQuery()) {
 
-    //         while (rs.next()) {
-    //             categories.add(rs.getString("category_name"));
-    //         }
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
+    // while (rs.next()) {
+    // categories.add(rs.getString("category_name"));
+    // }
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
 
-    //     return categories.toArray(new String[0]);
+    // return categories.toArray(new String[0]);
     // }
     // private static final String[] LOCATIONS = { "Location" };
     private static final String[] DATES = EventService.getAllDates();
     private static final String[] CATEGORIES = EventService.getAllCategories();
     private static final String[] LOCATIONS = EventService.getAllLocations();
-    
 
     public HomePage() {
 
@@ -247,23 +246,19 @@ public class HomePage extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-
-        // this code below is mohammed work we have to enhance it after azzam sprate the
-        // compnenet of homepage
         mainPanel.removeAll();
         if (e.getSource() == Home_Button) {
             content.eventsPanel.removeAll();
-        
+
             for (models.Event ev : EventService.getAllEvents()) {
                 content.addEventCard(ev.getEventId(), ev.getName(), ev.getLocation(), ev.getDate());
             }
-        
+
             content.eventsPanel.revalidate();
             content.eventsPanel.repaint();
-        
+
             mainPanel.add(contentPanel, BorderLayout.CENTER);
-        }
-         else if (e.getSource() == Tickets_Button) { // ==== GOES TO TICKETS PANEL ===
+        } else if (e.getSource() == Tickets_Button) { // ==== GOES TO TICKETS PANEL ===
             TicketsPanel newTicketsPanel = new TicketsPanel(); // create fresh instance (refresh)
             Tickets_Panel = newTicketsPanel;
             mainPanel.add(Tickets_Panel, BorderLayout.CENTER);
@@ -276,13 +271,13 @@ public class HomePage extends JFrame implements ActionListener {
             Email_Label.setText("User Email: " + email);
             Password_Label.setText("User Password: *******");
         } else if (e.getSource() == Notification_Button) {
-            NotificationPanel newNotifPanel = new NotificationPanel(); // 🔄 fresh panel with updated data
+            NotificationPanel newNotifPanel = new NotificationPanel();
             Notification_Panel = newNotifPanel;
             mainPanel.add(Notification_Panel, BorderLayout.CENTER);
         }
 
-         else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
-        // TO CREATE EVENT ===
+        else if (e.getSource() == Create_Event_Button) { // === FOR THE CREATE EVENT BUTTON IN EVENT MANAGEMENT PANEL
+            // TO CREATE EVENT ===
         }
 
         mainPanel.revalidate();
@@ -373,22 +368,21 @@ public class HomePage extends JFrame implements ActionListener {
         String selectedDate = (String) Date.getSelectedItem();
         String selectedCategory = (String) Category.getSelectedItem();
         String selectedLocation = (String) Location.getSelectedItem();
-    
+
         content.eventsPanel.removeAll();
-    
+
         for (models.Event ev : EventService.getAllEvents()) {
             boolean matchDate = selectedDate.equals("All") || ev.getDate().startsWith(selectedDate);
             boolean matchCategory = selectedCategory.equals("All") || ev.getCategory().equals(selectedCategory);
             boolean matchLocation = selectedLocation.equals("All") || ev.getLocation().equals(selectedLocation);
-    
+
             if (matchDate && matchCategory && matchLocation) {
                 content.addEventCard(ev.getEventId(), ev.getName(), ev.getLocation(), ev.getDate());
             }
         }
-    
+
         content.eventsPanel.revalidate();
-        content.eventsPanel.repaint();    
+        content.eventsPanel.repaint();
     }
-    
 
 }
